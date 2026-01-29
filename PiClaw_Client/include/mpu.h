@@ -28,7 +28,7 @@ private:
     volatile bool interrupt = false;     // indicates whether MPU interrupt pin has gone high
     
     int MPUOffsets[6] = {-262, 1702, 1307 , 193, 103, 74};// vert board
-    int interruptPin = 2;
+    int interruptPin = 25;
 
 public:
     MPU();
