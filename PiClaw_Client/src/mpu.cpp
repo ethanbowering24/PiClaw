@@ -133,6 +133,9 @@ void MPU::Loop()
 
 int main()
 {
+
+    wiringPiSetupPinType(WPI_PIN_PHYS);
+    pinMode(26, INPUT);
     I2Cdev::initialize("/dev/i2c-1");
 
     MPU mpu;

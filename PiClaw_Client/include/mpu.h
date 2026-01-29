@@ -1,5 +1,6 @@
 #include "MPU6050_6Axis_MotionApps20.h"
 #include "wiringPi.h"
+#include "MPU6050.h"
 
 class MPU
 {
@@ -28,7 +29,7 @@ private:
     volatile bool interrupt = false;     // indicates whether MPU interrupt pin has gone high
     
     int MPUOffsets[6] = {-262, 1702, 1307 , 193, 103, 74};// vert board
-    int interruptPin = 25;
+    int interruptPin = 26;
 
 public:
     MPU();

@@ -1,8 +1,17 @@
 project(PiClaw_Client)
 
+set(MPU_SOURCES
+	include/LinuxI2CDev/I2Cdev/I2Cdev.cpp
+	include/LinuxI2CDev/MPU6050/MPU6050.cpp
+	include/LinuxI2CDev/MPU6050/MPU6050_6Axis_MotionApps20.cpp
+)
+
 if(IS_PI)
     # --- BUILD FOR RASPBERRY PI ---
-    add_executable(PiClaw_Client src/mpu.cpp)
+    add_executable(PiClaw_Client 
+	    src/mpu.cpp
+	    ${MPU_SOURCES}
+	)
     
     find_library(WIRINGPI_LIB wiringPi REQUIRED)
     # target_link_libraries(remote_client ${WIRINGPI_LIB} pthread)
