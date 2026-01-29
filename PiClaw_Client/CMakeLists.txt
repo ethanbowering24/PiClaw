@@ -2,7 +2,7 @@ project(PiClaw_Client)
 
 if(IS_PI)
     # --- BUILD FOR RASPBERRY PI ---
-    add_executable(PiClaw_Client src/main.cpp)
+    add_executable(PiClaw_Client src/mpu.cpp)
     
     find_library(WIRINGPI_LIB wiringPi REQUIRED)
     # target_link_libraries(remote_client ${WIRINGPI_LIB} pthread)

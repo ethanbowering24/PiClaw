@@ -1,4 +1,5 @@
 #include "mpu.h"
+#include "I2Cdev.h"
 #include "wiringPi.h"
 #include <iostream>
 
@@ -109,7 +110,35 @@ void MPU::MPUMath()
 void MPU::ISR(struct WPIWfiStatus wfiStatus, void* userdata)
 {
     auto* mpu = static_cast<MPU*>(userdata);
-    //mpu->interrupt = true;
-    mpu->GetDMP();
+    //mpu->GetDMP();
+    mpu->interrupt = true;
+};
+
+void MPU::Loop()
+{
+    static unsigned long _ETimer;
+    while (true)
+        {
+            if ( millis() - _ETimer >= (100)) {
+            _ETimer += (10);
+            interrupt = true;
+        }
+        if (interrupt ) { // wait for MPU interrupt or extra packet(s) available
+            GetDMP();
+        }
+    }
+    
+    
+}
+
+int main()
+{
+    I2Cdev::initialize("/dev/i2c-1");
+
+    MPU mpu;
+
+    mpu.Connect();
+    mpu.Loop();
+
 }
 

@@ -37,6 +37,7 @@ public:
     void GetDMP();
     void MPUMath();
     void DmpDataReady();
+    void Loop();
 
     static void ISR(struct WPIWfiStatus wfiStatus, void* userdata);
 };
