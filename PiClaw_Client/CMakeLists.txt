@@ -6,9 +6,15 @@ if(IS_PI)
     
     find_library(WIRINGPI_LIB wiringPi REQUIRED)
     # target_link_libraries(remote_client ${WIRINGPI_LIB} pthread)
-    target_link_libraries(PiClaw_Client ${WIRINGPI_LIB})
-    target_include_directories(PiClaw_Client PRIVATE ${CMAKE_SOURCE_DIR}/common)
-    
+    target_link_libraries(PiClaw_Client ${WIRINGPI_LIB})    
+
+    target_include_directories(PiClaw_Client PRIVATE 
+        ${CMAKE_CURRENT_SOURCE_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/LinuxI2CDev
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/LinuxI2CDev/I2Cdev
+        ${CMAKE_CURRENT_SOURCE_DIR}/include/LinuxI2CDev/MPU6050
+        ${CMAKE_SOURCE_DIR}/common
+    )    
 else()
     # --- BUILD FOR PC (CHECK ONLY) ---
     add_library(PiClaw_Client_Check OBJECT 
