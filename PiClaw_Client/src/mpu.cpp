@@ -2,6 +2,7 @@
 #include "I2Cdev.h"
 #include "wiringPi.h"
 #include <iostream>
+#include <bitset>
 
 MPU::MPU():mpu6050()
 {
@@ -15,6 +16,18 @@ MPU::MPU(uint8_t mpu_address):mpu6050(mpu_address)
 
 bool MPU::Connect()
 {
+    //TODO: add device ID
+    if (mpu6050.testConnection())
+    {
+        std::cout << "MPU6050 Connection Successful" << std::endl;
+    }
+    else
+    {
+        std::cout << "MPU6050 Connection Failed" << std::endl;
+        return false;
+    }
+    
+
     for (int ctr = 1; ctr <= 10; ctr++)
     {
         mpu6050.initialize();
@@ -28,15 +41,16 @@ bool MPU::Connect()
         // 2 = DMP configuration updates failed
         // (if it's going to break, usually the code will be 1)
         char * StatStr[5] { "No Error", "initial memory load failed", "DMP configuration updates failed", "3", "4"};
-        std::cout << "MPU connection Try #" << ctr << "\nDMP Initialization failed (code " << StatStr[devStatus] << ")" << std::endl;
-        delay(1000);
-    }
+        std::cout << "MPU init Try #" << ctr << "\nDMP Init failed (code " << StatStr[devStatus] << ")" << std::endl;
 
-    if (devStatus != 0)
-    {
-        std::cout << "Max MPU connection attempts reached" << std::endl;
-        return false;
-    }    
+        if (ctr == 10)
+        {
+            std::cout << "Max MPU connection attempts reached" << std::endl;
+            return false;
+        }
+        
+        delay(1000);
+    }   
 
     mpu6050.setXAccelOffset(MPUOffsets[0]);
     mpu6050.setYAccelOffset(MPUOffsets[1]);
@@ -45,25 +59,27 @@ bool MPU::Connect()
     mpu6050.setYGyroOffset(MPUOffsets[4]);
     mpu6050.setZGyroOffset(MPUOffsets[5]);
 
-    //Serial.println(F("Enabling DMP..."));
     std::cout << "Enabling DMP..." << std::endl;
     mpu6050.setDMPEnabled(true);
-    // enable Arduino interrupt detection
-    std::cout << "Enabling interrupt detection (Arduino external interrupt pin 2 on the Uno)..." << std::endl;
+
+    std::cout << "Enabling interrupt detection" << std::endl;
+    mpu6050.setInterruptDrive(0);
     std::cout << "mpu.getInterruptDrive " << mpu6050.getInterruptDrive() << std::endl;
-    //attachInterrupt(digitalPinToInterrupt(interruptPin), dmpDataReady, RISING);
-   // wiringPiISR(interruptPin, INT_EDGE_RISING, &DmpDataReady);
-    wiringPiISR2(interruptPin, INT_EDGE_RISING, &ISR, 3000, this);
-    mpuIntStatus = mpu6050.getIntStatus(); // Same
+
+    std::cout << std::bitset<8>(mpu6050.getIntEnabled()) << std::endl;
+    //wiringPiISR2(interruptPin, INT_EDGE_RISING, &ISR, 3000, this);
+    //mpuIntStatus = mpu6050.getIntStatus();
+
     // get expected DMP packet size for later comparison
     packetSize = mpu6050.dmpGetFIFOPacketSize();
-    delay(1000); // Let it Stabalize
-    mpu6050.resetFIFO(); // Clear fifo buffer
-    mpu6050.getIntStatus();
-    interrupt = false; // wait for next interrupt
+    //delay(1000); // Let it Stabalize
+
+    //mpu6050.resetFIFO(); // Clear fifo buffer
+    //mpu6050.getIntStatus();
+    //interrupt = false; // wait for next interrupt
     return true;
 }
-
+/*
 void MPU::GetDMP() { // Best version I have made so far
   // Serial.println(F("FIFO interrupt at:"));
   // Serial.println(micros());
@@ -92,17 +108,17 @@ void MPU::MPUMath()
 {
     mpu6050.dmpGetQuaternion(&q, fifoBuffer);
     mpu6050.dmpGetGravity(&gravity, &q);
-    mpu6050.dmpGetYawPitchRoll(ypr, &q, &gravity);
+    //mpu6050.dmpGetYawPitchRoll(ypr, &q, &gravity);
     //float yaw = (ypr[0] * 180.0 / M_PI);
     //float pitch = (ypr[1] *  180.0 / M_PI);
     //float roll = (ypr[2] *  180.0 / M_PI);
     
-    /*delay(100);
+    delay(100);
     Serial.print(q.w);Serial.print(",");
     Serial.print(q.x);Serial.print(",");
     Serial.print(q.y);Serial.print(",");
     Serial.print(q.z);
-    Serial.print("\n");*/
+    Serial.print("\n");
 
     std::cout << q.w << ", " << q.x << ", " << q.y << ", " << q.z << std::endl;
 };
@@ -113,21 +129,17 @@ void MPU::ISR(struct WPIWfiStatus wfiStatus, void* userdata)
     //mpu->GetDMP();
     mpu->interrupt = true;
 };
-
+*/
 void MPU::Loop()
 {
-    static unsigned long _ETimer;
     while (true)
+    {
+        if (mpu6050.dmpGetCurrentFIFOPacket(fifoBuffer))
         {
-            if ( millis() - _ETimer >= (100)) {
-            _ETimer += (10);
-            interrupt = true;
+            mpu6050.dmpGetQuaternion(&q, fifoBuffer);
+            std::cout << q.w << ", " << q.x << ", " << q.y << ", " << q.z << std::endl;
         }
-        if (interrupt ) { // wait for MPU interrupt or extra packet(s) available
-            GetDMP();
-        }
-    }
-    
+    } 
     
 }
 
