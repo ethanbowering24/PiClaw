@@ -21,9 +21,9 @@ private:
     //VectorInt16 aa;         // [x, y, z]            accel sensor measurements
     //VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measurements
     //VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measurements
-    //VectorFloat gravity;    // [x, y, z]            gravity vector
-    //float euler[3];         // [psi, theta, phi]    Euler angle container
-    //float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+    VectorFloat gravity;    // [x, y, z]            gravity vector
+    float euler[3];         // [psi, theta, phi]    Euler angle container
+    float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
     //uint8_t startUP = 100; // lets get 100 readings from the MPU before we start trusting them (Bot is not trying to balance at this point it is just starting up.)
 
     //volatile bool interrupt = false;     // indicates whether MPU interrupt pin has gone high

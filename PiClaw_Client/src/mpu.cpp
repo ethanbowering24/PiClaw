@@ -3,6 +3,8 @@
 #include "wiringPi.h"
 #include <iostream>
 #include <bitset>
+#include <algorithm>
+#include <iterator>
 
 MPU::MPU():mpu6050()
 {
@@ -132,15 +134,59 @@ void MPU::ISR(struct WPIWfiStatus wfiStatus, void* userdata)
 */
 void MPU::Loop()
 {
-    while (true)
+    std::cout << "Discarding 100 readings..." << std::endl;
+    for (int i = 0; i < 100; i++)   
     {
+        mpu6050.dmpGetCurrentFIFOPacket(fifoBuffer);
+        delay(500);
+    } 
+
+    const int samples = 20000;
+    float yaw[samples];
+    float pitch[samples];
+    float roll[samples];
+
+    for (int i = 0; i < samples; i++)   
+    {
+        std::cout << "\nLOOP " << i << ":" << std::endl;
         if (mpu6050.dmpGetCurrentFIFOPacket(fifoBuffer))
         {
             mpu6050.dmpGetQuaternion(&q, fifoBuffer);
-            std::cout << q.w << ", " << q.x << ", " << q.y << ", " << q.z << std::endl;
+            std::cout << "Quaternion: " << q.w << ", " << q.x << ", " << q.y << ", " << q.z << std::endl;
+
+            mpu6050.dmpGetGravity(&gravity, &q);
+            std::cout << "Gravity :" << gravity.x << ", " << gravity.y << ", " << gravity.z << std::endl;
+
+            mpu6050.dmpGetYawPitchRoll(ypr, &q, &gravity);
+            yaw[i] = (ypr[0] * 180.0 / M_PI);
+            pitch[i] = (ypr[1] *  180.0 / M_PI);
+            roll[i] = (ypr[2] *  180.0 / M_PI);
+            std::cout << "YPR: " << yaw[i] << ", " << pitch[i] << ", " << roll[i] << std::endl;  
         }
+        else
+        {
+            std::cout << "READ " << i << "FAILED" << std::endl;
+        }
+        delay(500);
     } 
-    
+
+    std::cout << std::endl;
+
+    std::cout << "YAW START: " << yaw[0] << ", YAW END: " << yaw[samples-1] << std::endl;
+    auto yawMin = *std::min_element(std::begin(yaw), std::end(yaw));
+    auto yawMax = *std::max_element(std::begin(yaw), std::end(yaw));
+    std::cout << "YAW MIN: " << yawMin << ", YAW MAX: " << yawMax << ", RANGE: " << abs(yawMax-yawMin) << "\n" << std::endl;
+
+    std::cout << "PITCH START: " << pitch[0] << ", PITCH END: " << pitch[samples-1] << std::endl;
+    auto pitchMin = *std::min_element(std::begin(pitch), std::end(pitch));
+    auto pitchMax = *std::max_element(std::begin(pitch), std::end(pitch));
+    std::cout << "PITCH MIN: " << pitchMin << ", PITCH MAX: " << pitchMax << ", RANGE: " << abs(pitchMax-pitchMin) << "\n" << std::endl;
+
+    std::cout << "ROLL START: " << roll[0] << ", ROLL END: " << roll[samples-1] << std::endl;
+    auto rollMin = *std::min_element(std::begin(roll), std::end(roll));
+    auto rollMax = *std::max_element(std::begin(roll), std::end(roll));
+    std::cout << "ROLL MIN: " << rollMin << ", ROLL MAX: " << rollMax << ", RANGE: " << abs(rollMax-rollMin) << "\n" << std::endl;
+
 }
 
 int main()
@@ -153,6 +199,7 @@ int main()
     MPU mpu;
 
     mpu.Connect();
+    delay(1000);
     mpu.Loop();
 
 }
