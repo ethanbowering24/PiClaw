@@ -48,8 +48,8 @@ void MPU::ReadFusion()
         int16_t gx, gy, gz;
         mpu6050.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
     
-        FusionVector gyroscope = {gx, gy, gz};
-        FusionVector accelerometer = {ax, ay, az};
+        FusionVector gyroscope = {gx/131.0f, gy/131.0f, gz/131.0f};
+        FusionVector accelerometer = {ax/16384.0f, ay/16384.0f, az/16384.0f};
         //FusionVector magnetometer = {1.0f, 0.0f, 0.0f};
     
         gyroscope = FusionModelInertial(gyroscope, gyroscopeMisalignment, gyroscopeSensitivity, gyroscopeOffset);
