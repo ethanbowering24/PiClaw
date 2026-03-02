@@ -1,8 +1,9 @@
 #include "mpu.h"
 #include "I2Cdev.h"
 #include "Fusion.h"
-#include "time.h" //move to chrono
 
+#include <thread>
+#include <chrono>
 #include <iostream>
 
 MPU::MPU():mpu6050()
@@ -31,9 +32,17 @@ bool MPU::Connect()
 
     mpu6050.initialize(); 
     std::cout <<"init"<< std::endl;
-    struct timespec remaining, request = { 2, 0 };
-    nanosleep(&request, &remaining);
+    //struct timespec remaining, request = { 2, 0 };
+    //nanosleep(&request, &remaining);
 
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+
+    mpu6050.CalibrateAccel();
+    //delay
+    mpu6050.CalibrateGyro();
+    //delay
+    mpu6050.PrintActiveOffsets();
+    
     mpu6050.setDLPFMode(0x03); // set DLPF
     mpu6050.setExternalFrameSync(0x00); // disable FSYNC
 
@@ -58,10 +67,8 @@ bool MPU::Connect()
 
 void MPU::ReadFusion()
 {
-    //struct timespec remaining, request = { 0, 1000000000L / SAMPLE_RATE };
-    //clock_t previousTimestamp;
-    struct timespec previousTime, currentTime;
-    clock_gettime(CLOCK_MONOTONIC, &previousTime);
+    auto next_loop_time = std::chrono::steady_clock::now();
+    auto previousTime = std::chrono::steady_clock::now();
 
     while (true)
     {
@@ -81,12 +88,9 @@ void MPU::ReadFusion()
         gyroscope = FusionBiasUpdate(&bias, gyroscope);
     
         // Calculate delta time to compensate for gyroscope sample clock errors
-        //const float deltaTime = (float) (timestamp - previousTimestamp) / (float) CLOCKS_PER_SEC;
-        //previousTimestamp = timestamp;
-
-        clock_gettime(CLOCK_MONOTONIC, &currentTime);
-        float deltaTime = (currentTime.tv_sec - previousTime.tv_sec) +
-                          (currentTime.tv_nsec - previousTime.tv_nsec) / 1e9f;
+        auto currentTime = std::chrono::steady_clock::now();
+        std::chrono::duration<float> elapsed_seconds = currentTime - previousTime;
+        float deltaTime = elapsed_seconds.count();
         previousTime = currentTime;
 
         //FusionAhrsUpdate(&ahrs, gyroscope, accelerometer, magnetometer, deltaTime);
@@ -101,14 +105,12 @@ void MPU::ReadFusion()
                euler.angle.roll, euler.angle.pitch, euler.angle.yaw,
                earth.axis.x, earth.axis.y, earth.axis.z);
 
-        //nanosleep(&request, &remaining);
 
-        struct timespec remaining, request = { 0, 5000000L};
+        // 1. Advance your target time by exactly 5 milliseconds
+        next_loop_time += std::chrono::milliseconds(5);
 
-        while (nanosleep(&request, &remaining) == -1) {
-            request.tv_sec = remaining.tv_sec;
-            request.tv_nsec = remaining.tv_nsec;
-        }
+        // 2. Sleep until the system clock hits that exact target
+        std::this_thread::sleep_until(next_loop_time);
         
         
     }

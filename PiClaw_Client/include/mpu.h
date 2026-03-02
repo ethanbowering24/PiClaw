@@ -32,6 +32,7 @@ private:
     FusionBias bias;
     FusionAhrs ahrs;
 
+
 public:
     MPU();
     MPU(uint8_t mpu_address);
