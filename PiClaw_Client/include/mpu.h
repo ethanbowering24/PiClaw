@@ -1,7 +1,7 @@
 #include "MPU6050.h"
 #include "Fusion.h"
 
-#define SAMPLE_RATE 10
+#define SAMPLE_RATE 200
 
 class MPU
 {
@@ -23,10 +23,10 @@ private:
     const FusionAhrsSettings settings = {
         .convention = FusionConventionNwu,
         .gain = 0.5f,
-        .gyroscopeRange = 2000.0f, /* replace with actual gyroscope range */
+        .gyroscopeRange = 250.0f, /* replace with actual gyroscope range */
         .accelerationRejection = 10.0f,
         .magneticRejection = 10.0f,
-        .recoveryTriggerPeriod = 5 * SAMPLE_RATE, /* 5 seconds */
+        .recoveryTriggerPeriod = 0
     };
 
     FusionBias bias;

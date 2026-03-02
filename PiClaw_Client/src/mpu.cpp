@@ -27,8 +27,28 @@ bool MPU::Connect()
         std::cout << "MPU6050 Connection Failed" << std::endl;
         return false;
     }
+    
 
     mpu6050.initialize(); 
+    std::cout <<"init"<< std::endl;
+    struct timespec remaining, request = { 2, 0 };
+    nanosleep(&request, &remaining);
+
+    mpu6050.setDLPFMode(0x03); // set DLPF
+    mpu6050.setExternalFrameSync(0x00); // disable FSYNC
+
+    //Sample Rate = Gyroscope Output Rate / (1 + SMPLRT_DIV)
+    //  1000/(1+4) = 200Hz
+    mpu6050.setRate(0x04);
+
+
+    std::cout << "RATE: " << static_cast<int>(mpu6050.getRate()) << std::endl;
+    std::cout << "FSYNC: " << static_cast<int>(mpu6050.getExternalFrameSync()) << std::endl;
+    std::cout << "DLPF MODE: " << static_cast<int>(mpu6050.getDLPFMode()) << std::endl;
+    std::cout << "CLK: " << static_cast<int>(mpu6050.getClockSource()) << std::endl;
+    std::cout << "Gscale: " << static_cast<int>(mpu6050.getFullScaleGyroRange()) << std::endl;
+    std::cout << "Ascale: " << static_cast<int>(mpu6050.getFullScaleAccelRange()) << std::endl;
+
 
     FusionBiasInitialise(&bias, SAMPLE_RATE);
     FusionAhrsInitialise(&ahrs);
@@ -38,8 +58,10 @@ bool MPU::Connect()
 
 void MPU::ReadFusion()
 {
-    struct timespec remaining, request = { 0, 1000000000L / SAMPLE_RATE };
-    clock_t previousTimestamp;
+    //struct timespec remaining, request = { 0, 1000000000L / SAMPLE_RATE };
+    //clock_t previousTimestamp;
+    struct timespec previousTime, currentTime;
+    clock_gettime(CLOCK_MONOTONIC, &previousTime);
 
     while (true)
     {
@@ -59,8 +81,13 @@ void MPU::ReadFusion()
         gyroscope = FusionBiasUpdate(&bias, gyroscope);
     
         // Calculate delta time to compensate for gyroscope sample clock errors
-        const float deltaTime = (float) (timestamp - previousTimestamp) / (float) CLOCKS_PER_SEC;
-        previousTimestamp = timestamp;
+        //const float deltaTime = (float) (timestamp - previousTimestamp) / (float) CLOCKS_PER_SEC;
+        //previousTimestamp = timestamp;
+
+        clock_gettime(CLOCK_MONOTONIC, &currentTime);
+        float deltaTime = (currentTime.tv_sec - previousTime.tv_sec) +
+                          (currentTime.tv_nsec - previousTime.tv_nsec) / 1e9f;
+        previousTime = currentTime;
 
         //FusionAhrsUpdate(&ahrs, gyroscope, accelerometer, magnetometer, deltaTime);
         FusionAhrsUpdateNoMagnetometer(&ahrs, gyroscope, accelerometer, deltaTime);
@@ -74,7 +101,15 @@ void MPU::ReadFusion()
                euler.angle.roll, euler.angle.pitch, euler.angle.yaw,
                earth.axis.x, earth.axis.y, earth.axis.z);
 
-        nanosleep(&request, &remaining);
+        //nanosleep(&request, &remaining);
+
+        struct timespec remaining, request = { 0, 5000000L};
+
+        while (nanosleep(&request, &remaining) == -1) {
+            request.tv_sec = remaining.tv_sec;
+            request.tv_nsec = remaining.tv_nsec;
+        }
+        
         
     }
 
