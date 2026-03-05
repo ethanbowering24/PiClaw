@@ -6,12 +6,12 @@
 #include <chrono>
 #include <iostream>
 
-MPU::MPU():mpu6050()
+MPU::MPU(const char* devPath) : i2cDev(devPath), mpu6050(i2cDev)
 {
 
 };
 
-MPU::MPU(uint8_t mpu_address):mpu6050(mpu_address)
+MPU::MPU(const char* devPath, uint8_t mpu_address) : i2cDev(devPath), mpu6050(i2cDev, mpu_address)
 {
 
 };
@@ -114,9 +114,9 @@ int main()
 
     //wiringPiSetupPinType(WPI_PIN_PHYS);
     //pinMode(26, INPUT);
-    I2Cdev::initialize("/dev/i2c-1");
 
-    MPU mpu;
+
+    MPU mpu("/dev/i2c-1");
 
     mpu.Connect();
     mpu.ReadFusion();
