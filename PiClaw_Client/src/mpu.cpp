@@ -80,11 +80,7 @@ void MPU::ReadFusion()
         FusionVector gyroscope = {gx/131.0f, gy/131.0f, gz/131.0f};
         FusionVector accelerometer = {ax/16384.0f, ay/16384.0f, az/16384.0f};
         //FusionVector magnetometer = {1.0f, 0.0f, 0.0f};
-    
-        gyroscope = FusionModelInertial(gyroscope, gyroscopeMisalignment, gyroscopeSensitivity, gyroscopeOffset);
-        accelerometer = FusionModelInertial(accelerometer, accelerometerMisalignment, accelerometerSensitivity, accelerometerOffset);
-        //magnetometer = FusionModelMagnetic(magnetometer, softIronMatrix, hardIronOffset);
-    
+        
         gyroscope = FusionBiasUpdate(&bias, gyroscope);
     
         // Calculate delta time to compensate for gyroscope sample clock errors
@@ -106,13 +102,9 @@ void MPU::ReadFusion()
                earth.axis.x, earth.axis.y, earth.axis.z);
 
 
-        // 1. Advance your target time by exactly 5 milliseconds
+        // 5ms for 200Hz
         next_loop_time += std::chrono::milliseconds(5);
-
-        // 2. Sleep until the system clock hits that exact target
         std::this_thread::sleep_until(next_loop_time);
-        
-        
     }
 
 }
