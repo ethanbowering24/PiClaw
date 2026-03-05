@@ -27,6 +27,7 @@ private:
 public:
     MPU(const char* devPath);
     MPU(const char* devPath, uint8_t mpu_address);
+    bool Calibrate();
     bool Connect();
     void ReadFusion();
 

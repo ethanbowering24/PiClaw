@@ -6,6 +6,10 @@
 #include <chrono>
 #include <iostream>
 
+#include <string>
+#include <vector>
+#include <algorithm>
+
 MPU::MPU(const char* devPath) : i2cDev(devPath), mpu6050(i2cDev)
 {
 
@@ -15,6 +19,15 @@ MPU::MPU(const char* devPath, uint8_t mpu_address) : i2cDev(devPath), mpu6050(i2
 {
 
 };
+
+bool MPU::Calibrate()
+{
+    mpu6050.CalibrateAccel(1000);
+    mpu6050.CalibrateGyro(1000);
+
+    mpu6050.PrintActiveOffsets();
+    // save to a file
+}
 
 bool MPU::Connect()
 {
@@ -32,16 +45,6 @@ bool MPU::Connect()
 
     mpu6050.initialize(); 
     std::cout <<"init"<< std::endl;
-    //struct timespec remaining, request = { 2, 0 };
-    //nanosleep(&request, &remaining);
-
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
-
-    mpu6050.CalibrateAccel();
-    //delay
-    mpu6050.CalibrateGyro();
-    //delay
-    mpu6050.PrintActiveOffsets();
     
     mpu6050.setDLPFMode(0x03); // set DLPF
     mpu6050.setExternalFrameSync(0x00); // disable FSYNC
@@ -50,6 +53,7 @@ bool MPU::Connect()
     //  1000/(1+4) = 200Hz
     mpu6050.setRate(0x04);
 
+    //load calibration params
 
     std::cout << "RATE: " << static_cast<int>(mpu6050.getRate()) << std::endl;
     std::cout << "FSYNC: " << static_cast<int>(mpu6050.getExternalFrameSync()) << std::endl;
@@ -58,15 +62,15 @@ bool MPU::Connect()
     std::cout << "Gscale: " << static_cast<int>(mpu6050.getFullScaleGyroRange()) << std::endl;
     std::cout << "Ascale: " << static_cast<int>(mpu6050.getFullScaleAccelRange()) << std::endl;
 
-
-    FusionBiasInitialise(&bias, SAMPLE_RATE);
-    FusionAhrsInitialise(&ahrs);
-    FusionAhrsSetSettings(&ahrs, &settings);
     return true;
 }
 
 void MPU::ReadFusion()
 {
+
+    FusionBiasInitialise(&bias, SAMPLE_RATE);
+    FusionAhrsInitialise(&ahrs);
+    FusionAhrsSetSettings(&ahrs, &settings);
     auto next_loop_time = std::chrono::steady_clock::now();
     auto previousTime = std::chrono::steady_clock::now();
 
@@ -109,16 +113,23 @@ void MPU::ReadFusion()
 
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-
-    //wiringPiSetupPinType(WPI_PIN_PHYS);
-    //pinMode(26, INPUT);
-
 
     MPU mpu("/dev/i2c-1");
 
     mpu.Connect();
+    
+
+
+    //wiringPiSetupPinType(WPI_PIN_PHYS);
+    //pinMode(26, INPUT);
+    std::vector<std::string> args(argv, argv + argc);
+    if (std::find(args.begin(), args.end(), "--calibrate") != args.end()) {
+        mpu.Calibrate();
+        return;
+    }
+    
     mpu.ReadFusion();
 
 }
