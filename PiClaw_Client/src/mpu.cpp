@@ -20,13 +20,14 @@ MPU::MPU(const char* devPath, uint8_t mpu_address) : i2cDev(devPath), mpu6050(i2
 
 };
 
-bool MPU::Calibrate()
+void MPU::Calibrate()
 {
-    mpu6050.CalibrateAccel(1000);
-    mpu6050.CalibrateGyro(1000);
+    mpu6050.CalibrateAccel(255);
+    mpu6050.CalibrateGyro(255);
 
     mpu6050.PrintActiveOffsets();
     // save to a file
+
 }
 
 bool MPU::Connect()
@@ -127,10 +128,11 @@ int main(int argc, char* argv[])
     std::vector<std::string> args(argv, argv + argc);
     if (std::find(args.begin(), args.end(), "--calibrate") != args.end()) {
         mpu.Calibrate();
-        return;
+        return 0;
     }
     
     mpu.ReadFusion();
+    return 0;
 
 }
 
