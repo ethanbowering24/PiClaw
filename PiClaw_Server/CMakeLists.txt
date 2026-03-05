@@ -1,21 +1,28 @@
 project(PiClaw_Server)
 
+set(SERVER_SOURCES
+    src/main.cpp
+)
+
 if(IS_PI)
     # --- BUILD FOR RASPBERRY PI ---
-    add_executable(PiClaw_Server src/main.cpp)
+    set(TARGET_NAME PiClaw_Server)
+    add_executable(${TARGET_NAME} ${SERVER_SOURCES})
     
     find_library(WIRINGPI_LIB wiringPi REQUIRED)
-    # target_link_libraries(remote_client ${WIRINGPI_LIB} pthread)
-    target_link_libraries(PiClaw_Server ${WIRINGPI_LIB})
-    target_include_directories(PiClaw_Server PRIVATE ${CMAKE_SOURCE_DIR}/common)
+    target_link_libraries(${TARGET_NAME} PRIVATE ${WIRINGPI_LIB}) 
+
 else()
     # --- BUILD FOR PC (CHECK ONLY) ---
-    add_library(PiClaw_Server_Check OBJECT src/main.cpp)
-
-    target_include_directories(PiClaw_Server_Check PRIVATE ${CMAKE_SOURCE_DIR}/common)
-    target_include_directories(PiClaw_Server_Check PRIVATE ${CMAKE_SOURCE_DIR}/common/LinuxI2CDev)
-    target_include_directories(PiClaw_Server_Check PRIVATE ${CMAKE_SOURCE_DIR}/common/LinuxI2CDev/I2Cdev)
-    target_include_directories(PiClaw_Server_Check PRIVATE ${CMAKE_SOURCE_DIR}/common/LinuxI2CDev/MPU6050)
-
-    target_include_directories(PiClaw_Server_Check SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/wiringPiHeader)
+    set(TARGET_NAME PiClaw_Server_Check)
+    add_library(${TARGET_NAME} OBJECT ${SERVER_SOURCES})
+        
+    # PC-specific mock headers
+    target_include_directories(${TARGET_NAME} SYSTEM PRIVATE ${CMAKE_SOURCE_DIR}/PiHeaders)
 endif()
+
+# --- COMMON INCLUDES ---
+target_include_directories(${TARGET_NAME} PRIVATE 
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/common
+)
