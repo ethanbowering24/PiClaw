@@ -423,7 +423,7 @@ THE SOFTWARE.
 
 class MPU6050_Base {
     public:
-        MPU6050_Base(uint8_t address=MPU6050_DEFAULT_ADDRESS);
+        MPU6050_Base(I2Cdev& i2cDev, uint8_t address=MPU6050_DEFAULT_ADDRESS);
 
         void initialize();
         bool testConnection();
@@ -826,6 +826,7 @@ class MPU6050_Base {
     
     private:
         int16_t offsets[6];
+        I2Cdev& i2cDev;
 };
 
 #ifndef I2CDEVLIB_MPU6050_TYPEDEF

@@ -56,15 +56,14 @@ THE SOFTWARE.
 #include <sys/ioctl.h>
 #include <linux/i2c-dev.h>
 
-static const char* i2cDev = NULL;
 /** Default constructor.
  */
-I2Cdev::I2Cdev() {
+I2Cdev::I2Cdev(const char* i2cDev) : i2cDev(i2cDev) {
 }
 
-void I2Cdev::initialize(const char* devPath) {
+/*void I2Cdev::initialize(const char* devPath) {
 	i2cDev = devPath;
-}
+}*/
 /** Read a single bit from an 8-bit device register.
  * @param devAddr I2C slave device address
  * @param regAddr Register regAddr to read from
