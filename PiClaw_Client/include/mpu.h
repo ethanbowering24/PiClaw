@@ -7,7 +7,7 @@
 class MPU
 {
 private:
-    I2Cdev i2cDev;
+    I2Cdev &i2cDev; //turn this into a reference so that other classes can share the i2c
     MPU6050 mpu6050;
     //int MPUOffsets[6] = {-262, 1702, 1307 , 193, 103, 74};// vert board
 
@@ -27,8 +27,8 @@ private:
 
 
 public:
-    MPU(const char* devPath);
-    MPU(const char* devPath, uint8_t mpu_address);
+    MPU(I2Cdev &i2cDev);
+    MPU(I2Cdev &i2cDev, uint8_t mpu_address);
     void Calibrate();
     bool Connect();
     void ReadFusion();

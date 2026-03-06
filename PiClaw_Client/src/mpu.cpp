@@ -10,12 +10,12 @@
 #include <vector>
 #include <algorithm>
 
-MPU::MPU(const char* devPath) : i2cDev(devPath), mpu6050(i2cDev)
+MPU::MPU(I2Cdev &i2cDev) : i2cDev(i2cDev), mpu6050(i2cDev)
 {
 
 };
 
-MPU::MPU(const char* devPath, uint8_t mpu_address) : i2cDev(devPath), mpu6050(i2cDev, mpu_address)
+MPU::MPU(I2Cdev &i2cDev, uint8_t mpu_address) : i2cDev(i2cDev), mpu6050(i2cDev, mpu_address)
 {
 
 };
@@ -131,7 +131,9 @@ void MPU::ReadFusion()
 int main(int argc, char* argv[])
 {
 
-    MPU mpu("/dev/i2c-1");
+    I2Cdev i2c1("/dev/i2c-1");
+
+    MPU mpu(i2c1);
 
     mpu.Connect();
 
