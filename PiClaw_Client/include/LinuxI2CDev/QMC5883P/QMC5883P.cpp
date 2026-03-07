@@ -1,4 +1,6 @@
 #include "QMC5883P.h"
+#include <time.h>
+
 
 /** Specific address constructor.
  * @param address I2C address, uses default I2C address if none is specified
@@ -8,7 +10,7 @@ QMC5883P::QMC5883P(I2Cdev& i2cDev, uint8_t address) : i2cDev(i2cDev), devAddr(ad
 }
 
 void QMC5883P::initialize() {
-
+    softReset();
 }
 
 bool QMC5883P::testConnection() {
@@ -16,11 +18,8 @@ bool QMC5883P::testConnection() {
 }
 
 /** Get Device ID.
- * This register is used to verify the identity of the device (0b110100, 0x34).
- * @return Device ID (6 bits only! should be 0x34)
- * @see MPU6050_RA_WHO_AM_I
- * @see MPU6050_WHO_AM_I_BIT
- * @see MPU6050_WHO_AM_I_LENGTH
+ * This register is used to verify the identity of the device (0b10000000, 0x80).
+ * @return Device ID (should be 0x80)
  */
 uint8_t QMC5883P::getDeviceID() {
     i2cDev.readBits(devAddr, QMC5883P_RA_CHIPID, QMC5883P_CHIPID_BIT, QMC5883P_CHIPID_LENGTH, buffer, i2cDev.readTimeout);
@@ -78,10 +77,10 @@ void QMC5883P::getGaussField(float *x, float *y, float *z) {
  * as described in the table below.
  *
  * <pre>
- * 0 = +/- 30 Gauss
- * 1 = +/- 12 Gauss
- * 2 = +/- 8 Gauss
- * 3 = +/- 2 Gauss
+ * 0x00 = +/- 30 Gauss
+ * 0x01 = +/- 12 Gauss
+ * 0x02 = +/- 8 Gauss
+ * 0x03 = +/- 2 Gauss
  * </pre>
  *
  * @return Current magnetometer range setting
@@ -105,10 +104,10 @@ void QMC5883P::setRange(uint8_t range) {
  * as described in the table below.
  *
  * <pre>
- * 0 = Suspend
- * 1 = Normal mode
- * 2 = Single
- * 3 = Continuous mode
+ * 0x00 = Suspend
+ * 0x01 = Normal mode
+ * 0x02 = Single
+ * 0x03 = Continuous mode
  * </pre>
  *
  * @return Current magnetometer mode setting
@@ -126,6 +125,17 @@ void QMC5883P::setMode(uint8_t mode) {
     i2cDev.writeBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_MODE_BIT, QMC5583P_CTRL1_MODE_LENGTH, mode);
 }
 
+/** Get magnetometer ODR
+ * @return Current magentometer ODR setting
+ * 
+ * <pre>
+ * 0x00 = 10Hz
+ * 0x01 = 50Hz
+ * 0x02 = 100Hz
+ * 0x03 = 200Hz
+ * </pre>
+ * 
+ */
 uint8_t QMC5883P::getODR() {
     i2cDev.readBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_ODR_BIT, QMC5583P_CTRL1_ODR_LENGTH, buffer, i2cDev.readTimeout);
     return buffer[0];
@@ -139,38 +149,112 @@ void QMC5883P::setODR(uint8_t odr) {
     i2cDev.writeBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_ODR_BIT, QMC5583P_CTRL1_ODR_LENGTH, odr);
 }
 
+/** Get magnetometer OSR
+ * @return Current magentometer OSR setting
+ * 
+ * <pre>
+ * 0x00 = 8
+ * 0x01 = 4
+ * 0x02 = 2
+ * 0x03 = 1
+ * </pre>
+ * 
+ */
 uint8_t QMC5883P::getOSR() {
     i2cDev.readBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_OSR1_BIT, QMC5583P_CTRL1_OSR1_LENGTH, buffer, i2cDev.readTimeout);
     return buffer[0];
 }
 
 /** Set magnetometer OSR
- * @param odr New magnetometer OSR value
- * @see getOSR()
+ * @param osr New magnetometer OSR value
+ * @see getOSR() 
  */
 void QMC5883P::setOSR(uint8_t osr) {
     i2cDev.writeBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_OSR1_BIT, QMC5583P_CTRL1_OSR1_LENGTH, osr);
 }
 
+/** Get magnetometer DSR
+ * @return Current magnetometer DSR setting
+ * 
+ * <pre>
+ * 0x00 = 1
+ * 0x01 = 2
+ * 0x02 = 4
+ * 0x03 = 8
+ * </pre>
+ * 
+ */
 uint8_t QMC5883P::getDSR() {
     i2cDev.readBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_OSR2_BIT, QMC5583P_CTRL1_OSR2_LENGTH, buffer, i2cDev.readTimeout);
     return buffer[0];
 }
 
 /** Set magnetometer DSR
- * @param odr New magnetometer DSR value
- * @see getDSR()
+ * @param dsr New magnetometer DSR value
+ * @see getDSR() 
  */
 void QMC5883P::setDSR(uint8_t dsr) {
     i2cDev.writeBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_OSR2_BIT, QMC5583P_CTRL1_OSR2_LENGTH, dsr);
 }
 
+/** Check if data is ready
+ * @return True if data is ready, false otherwise
+ */
 bool QMC5883P::isDataReady() {
     i2cDev.readBit(devAddr, QMC5883P_RA_STATUS, QMC5883_DRDY_BIT, buffer, i2cDev.readTimeout);
     return buffer[0];
 }
 
+/** Check if buffer has overflown
+ * @return True if buffer has overflown, false otherwise
+ */
 bool QMC5883P::isOverflow() {
     i2cDev.readBit(devAddr, QMC5883P_RA_STATUS, QMC5883_OVFL_BIT, buffer, i2cDev.readTimeout);
     return buffer[0];
+}
+
+/** Get current magnetometer Set/Reset mode
+ *
+ * <pre>
+ * 0x00 = Set and reset on
+ * 0x01 = Set on only
+ * 0x02 = Set and reset off
+ * 0x03 = Set and reset off
+ * </pre>
+ *
+ * @return Current magnetometer Set/Reset mode
+ */
+uint8_t QMC5883P::getSetResetMode() {
+    i2cDev.readBits(devAddr, QMC5883P_RA_CONTROL2, QMC5583P_CTRL2_SR_BIT, QMC5583P_CTRL2_SR_LENGTH, buffer, i2cDev.readTimeout);
+    return buffer[0];
+}
+
+/** Set magnetometer set/Reset mode
+ * @param mode New magnetometer Set/Reset mode
+ * @see getSetResetMode()
+ */
+void QMC5883P::setSetResetMode(uint8_t mode) {
+    i2cDev.writeBits(devAddr, QMC5883P_RA_CONTROL2, QMC5583P_CTRL2_SR_BIT, QMC5583P_CTRL2_SR_LENGTH, mode);
+}
+
+/*!
+ *  @brief  Performs a soft reset of the chip
+ *  @return True if reset is successful
+ */
+bool QMC5883P::softReset() {
+    i2cDev.writeBit(devAddr, QMC5883P_RA_CONTROL2, QMC5583P_CTRL2_SOFTRESET_BIT, 1);
+    nanosleep((const struct timespec[]){{0, 50000000L}}, NULL);
+    i2cDev.readBit(devAddr, QMC5883P_RA_CONTROL2, QMC5583P_CTRL2_SOFTRESET_BIT, buffer);
+    return buffer[0]==0;
+}
+
+/*!
+ *  @brief  Performs self-test of the chip
+ *  @return True if self-test passed, false otherwise
+ */
+bool QMC5883P::selfTest() {
+    i2cDev.writeBit(devAddr, QMC5883P_RA_CONTROL2, QMC5583P_CTRL2_SELFTEST_BIT, 1);
+    nanosleep((const struct timespec[]){{0, 5000000L}}, NULL);
+    i2cDev.readBit(devAddr, QMC5883P_RA_CONTROL2, QMC5583P_CTRL2_SELFTEST_BIT, buffer);
+    return buffer[0]==0;
 }

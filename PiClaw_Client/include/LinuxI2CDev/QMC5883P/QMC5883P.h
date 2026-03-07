@@ -22,9 +22,6 @@
 #define QMC5883P_CHIPID_BIT 7
 #define QMC5883P_CHIPID_LENGTH 8
 
-#define QMC5583P_CTRL2_RNG_BIT 3
-#define QMC5583P_CTRL2_RNG_LENGTH 2
-
 #define QMC5583P_CTRL1_MODE_BIT 1
 #define QMC5583P_CTRL1_MODE_LENGTH 2
 
@@ -36,6 +33,15 @@
 
 #define QMC5583P_CTRL1_OSR2_BIT 7
 #define QMC5583P_CTRL1_OSR2_LENGTH 2
+
+#define QMC5583P_CTRL2_RNG_BIT 3
+#define QMC5583P_CTRL2_RNG_LENGTH 2
+
+#define QMC5583P_CTRL2_SR_BIT 1
+#define QMC5583P_CTRL2_SR_LENGTH 2
+
+#define QMC5583P_CTRL2_SELFTEST_BIT 6
+#define QMC5583P_CTRL2_SOFTRESET_BIT 7
 
 
 class QMC5883P {
@@ -57,12 +63,12 @@ class QMC5883P {
         uint8_t getOSR();                   
         void setDSR(uint8_t dsr);           
         uint8_t getDSR();                   
-        bool softReset();                   //todo
-        bool selfTest();                    //todo
+        bool softReset();                   
+        bool selfTest();
         void setRange(uint8_t range);
         uint8_t getRange(); 
-        void setSetResetMode(uint8_t mode); //todo
-        uint8_t getSetResetMode();          //todo
+        void setSetResetMode(uint8_t mode); 
+        uint8_t getSetResetMode();          
 
     protected:
         uint8_t devAddr;
