@@ -5,6 +5,7 @@ set(CLIENT_SOURCES
     src/mpu.cpp
 	include/LinuxI2CDev/I2Cdev/I2Cdev.cpp
 	include/LinuxI2CDev/MPU6050/MPU6050.cpp
+    include/LinuxI2CDev/QMC5883P/QMC5883P.cpp
 )
 
 if(IS_PI)
@@ -32,5 +33,6 @@ target_include_directories(${TARGET_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include/LinuxI2CDev
     ${CMAKE_CURRENT_SOURCE_DIR}/include/LinuxI2CDev/I2Cdev
     ${CMAKE_CURRENT_SOURCE_DIR}/include/LinuxI2CDev/MPU6050
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/LinuxI2CDev/QMC5883P
     ${CMAKE_SOURCE_DIR}/common
 )
