@@ -16,12 +16,26 @@
 #define QMC5883P_RA_CONTROL1 0x0A ///< Control register 1
 #define QMC5883P_RA_CONTROL2 0x0B ///< Control register 2
 
+#define QMC5883_DRDY_BIT 0
+#define QMC5883_OVFL_BIT 1
+
 #define QMC5883P_CHIPID_BIT 7
 #define QMC5883P_CHIPID_LENGTH 8
 
 #define QMC5583P_CTRL2_RNG_BIT 3
 #define QMC5583P_CTRL2_RNG_LENGTH 2
 
+#define QMC5583P_CTRL1_MODE_BIT 1
+#define QMC5583P_CTRL1_MODE_LENGTH 2
+
+#define QMC5583P_CTRL1_ODR_BIT 3
+#define QMC5583P_CTRL1_ODR_LENGTH 2
+
+#define QMC5583P_CTRL1_OSR1_BIT 5
+#define QMC5583P_CTRL1_OSR1_LENGTH 2
+
+#define QMC5583P_CTRL1_OSR2_BIT 7
+#define QMC5583P_CTRL1_OSR2_LENGTH 2
 
 
 class QMC5883P {
@@ -31,19 +45,18 @@ class QMC5883P {
         bool testConnection();
         uint8_t getDeviceID();
         
-        //bool begin(uint8_t i2c_addr = QMC5883P_DEFAULT_ADDR, TwoWire *wire = &Wire);
         void getRawMagnetic(int16_t *x, int16_t *y, int16_t *z);
         void getGaussField(float *x, float *y, float *z);
-        bool isDataReady();                 //todo
-        bool isOverflow();                  //todo
-        void setMode(uint8_t mode);         //todo
-        uint8_t getMode();                  //todo
-        void setODR(uint8_t odr);           //todo
-        uint8_t getODR();                   //todo
-        void setOSR(uint8_t osr);           //todo
-        uint8_t getOSR();                   //todo
-        void setDSR(uint8_t dsr);           //todo
-        uint8_t getDSR();                   //todo
+        bool isDataReady();
+        bool isOverflow();
+        void setMode(uint8_t mode);         
+        uint8_t getMode();                  
+        void setODR(uint8_t odr);           
+        uint8_t getODR();                   
+        void setOSR(uint8_t osr);           
+        uint8_t getOSR();                   
+        void setDSR(uint8_t dsr);           
+        uint8_t getDSR();                   
         bool softReset();                   //todo
         bool selfTest();                    //todo
         void setRange(uint8_t range);

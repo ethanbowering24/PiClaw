@@ -74,7 +74,7 @@ void QMC5883P::getGaussField(float *x, float *y, float *z) {
 }
 
 /** Get magnetometer range.
- * The FS_SEL parameter allows setting the full-scale range of the gyro sensors,
+ * The RNG parameter allows setting the range of the magnetometer sensors,
  * as described in the table below.
  *
  * <pre>
@@ -99,3 +99,78 @@ void QMC5883P::setRange(uint8_t range) {
     i2cDev.writeBits(devAddr, QMC5883P_RA_CONTROL2, QMC5583P_CTRL2_RNG_BIT, QMC5583P_CTRL2_RNG_LENGTH, range);
 }
 
+
+/** Get magnetometer mode.
+ * The MODE parameter allows setting the mode of the magnetometer sensors,
+ * as described in the table below.
+ *
+ * <pre>
+ * 0 = Suspend
+ * 1 = Normal mode
+ * 2 = Single
+ * 3 = Continuous mode
+ * </pre>
+ *
+ * @return Current magnetometer mode setting
+ */
+uint8_t QMC5883P::getMode() {
+    i2cDev.readBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_MODE_BIT, QMC5583P_CTRL1_MODE_LENGTH, buffer, i2cDev.readTimeout);
+    return buffer[0];
+}
+
+/** Set magnetometer mode.
+ * @param mode New magnetometer mode value
+ * @see getMode()
+ */
+void QMC5883P::setMode(uint8_t mode) {
+    i2cDev.writeBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_MODE_BIT, QMC5583P_CTRL1_MODE_LENGTH, mode);
+}
+
+uint8_t QMC5883P::getODR() {
+    i2cDev.readBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_ODR_BIT, QMC5583P_CTRL1_ODR_LENGTH, buffer, i2cDev.readTimeout);
+    return buffer[0];
+}
+
+/** Set magnetometer ODR.
+ * @param odr New magnetometer ODR value
+ * @see getODR()
+ */
+void QMC5883P::setODR(uint8_t odr) {
+    i2cDev.writeBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_ODR_BIT, QMC5583P_CTRL1_ODR_LENGTH, odr);
+}
+
+uint8_t QMC5883P::getOSR() {
+    i2cDev.readBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_OSR1_BIT, QMC5583P_CTRL1_OSR1_LENGTH, buffer, i2cDev.readTimeout);
+    return buffer[0];
+}
+
+/** Set magnetometer OSR
+ * @param odr New magnetometer OSR value
+ * @see getOSR()
+ */
+void QMC5883P::setOSR(uint8_t osr) {
+    i2cDev.writeBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_OSR1_BIT, QMC5583P_CTRL1_OSR1_LENGTH, osr);
+}
+
+uint8_t QMC5883P::getDSR() {
+    i2cDev.readBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_OSR2_BIT, QMC5583P_CTRL1_OSR2_LENGTH, buffer, i2cDev.readTimeout);
+    return buffer[0];
+}
+
+/** Set magnetometer DSR
+ * @param odr New magnetometer DSR value
+ * @see getDSR()
+ */
+void QMC5883P::setDSR(uint8_t dsr) {
+    i2cDev.writeBits(devAddr, QMC5883P_RA_CONTROL1, QMC5583P_CTRL1_OSR2_BIT, QMC5583P_CTRL1_OSR2_LENGTH, dsr);
+}
+
+bool QMC5883P::isDataReady() {
+    i2cDev.readBit(devAddr, QMC5883P_RA_STATUS, QMC5883_DRDY_BIT, buffer, i2cDev.readTimeout);
+    return buffer[0];
+}
+
+bool QMC5883P::isOverflow() {
+    i2cDev.readBit(devAddr, QMC5883P_RA_STATUS, QMC5883_OVFL_BIT, buffer, i2cDev.readTimeout);
+    return buffer[0];
+}
