@@ -3,6 +3,8 @@ add_subdirectory(include/Fusion)
 
 set(CLIENT_SOURCES
     src/mpu.cpp
+    src/main.cpp
+    src/arm.cpp
 	include/LinuxI2CDev/I2Cdev/I2Cdev.cpp
 	include/LinuxI2CDev/MPU6050/MPU6050.cpp
     include/LinuxI2CDev/QMC5883P/QMC5883P.cpp

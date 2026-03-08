@@ -12,7 +12,8 @@
 
 MPU::MPU(I2Cdev &i2cDev, bool hasQMC) : i2cDev(i2cDev), mpu6050(i2cDev), qmc5883p(i2cDev), hasQMC(hasQMC)
 {
-
+    FusionBiasInitialise(&bias, SAMPLE_RATE);
+    FusionAhrsInitialise(&ahrs);
 };
 
 /*
@@ -90,7 +91,7 @@ bool MPU::Connect()
     return true;
 }
 
-void MPU::ReadFusion()
+void MPU::ReadFusionOld()
 {
 
     FusionBiasInitialise(&bias, SAMPLE_RATE);
@@ -98,7 +99,7 @@ void MPU::ReadFusion()
     //FusionAhrsSetSettings(&ahrs, &settings);
 
     auto next_loop_time = std::chrono::steady_clock::now();
-    auto previousTime = std::chrono::steady_clock::now();
+    previousTime = std::chrono::steady_clock::now();
 
     while (true)
     {
@@ -171,6 +172,83 @@ void MPU::ReadFusion()
 
 }
 
+bool MPU::ReadFusion(FusionEuler& euler)
+{
+    if (firstRead)
+    {
+        previousTime = std::chrono::steady_clock::now();
+        firstRead = false;
+    }
+    
+    while (true)
+    {
+        int16_t ax, ay, az;
+        int16_t gx, gy, gz;
+        mpu6050.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+    
+        //TODO replace magic numbers with named values
+        FusionVector gyroscope = {gx/131.0f, gy/131.0f, gz/131.0f};
+        FusionVector accelerometer = {ax/16384.0f, ay/16384.0f, az/16384.0f};
+        FusionVector magnetometer = FUSION_VECTOR_ZERO;
+        gyroscope = FusionBiasUpdate(&bias, gyroscope);
+
+        if (hasQMC)
+        {
+            int16_t mx ,my ,mz ;
+            qmc5883p.getRawMagnetic(&mx, &my, &mz);
+            magnetometer = {mx/1000.0f, my/1000.0f, mz/1000.0f};
+        }
+    
+        // Calculate delta time to compensate for gyroscope sample clock errors
+        auto currentTime = std::chrono::steady_clock::now();
+        std::chrono::duration<float> elapsed_seconds = currentTime - previousTime;
+        float deltaTime = elapsed_seconds.count();
+        previousTime = currentTime;
+
+        if (hasQMC)
+        {
+            FusionAhrsUpdate(&ahrs, gyroscope, accelerometer, magnetometer, deltaTime);
+        }
+        else
+        {
+            FusionAhrsUpdateNoMagnetometer(&ahrs, gyroscope, accelerometer, deltaTime);
+        }
+
+        // Print AHRS outputs
+        euler = FusionQuaternionToEuler(FusionAhrsGetQuaternion(&ahrs));
+
+        /*
+        const FusionVector earth = FusionAhrsGetEarthAcceleration(&ahrs);
+
+        printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f, X %0.1f, Y %0.1f, Z %0.1f\n",
+               euler.angle.roll, euler.angle.pitch, euler.angle.yaw,
+               earth.axis.x, earth.axis.y, earth.axis.z);
+        */
+
+        /*
+        FusionAhrsFlags flags = FusionAhrsGetFlags(&ahrs);
+        if (flags.accelerationRecovery)
+        {
+            std::cout << "ACCELERATION RECOVERY" << std::endl;
+        }
+        if (flags.angularRateRecovery)
+        {
+            std::cout << "ANGULAR RECOVERY" << std::endl;
+        }
+        if (flags.initialising)
+        {
+            std::cout << "INITIALIZING" << std::endl;
+        }
+        if (flags.magneticRecovery)
+        {
+            std::cout << "MAGNETIC RECOVERY" << std::endl;
+        }   
+        */
+    }
+
+}
+
+/*
 int main(int argc, char* argv[])
 {
 
@@ -180,8 +258,8 @@ int main(int argc, char* argv[])
 
 
     MPU wrist(i2c1);
-    //MPU forearm(i2c3);
-    //MPU upper(i2c4);
+    MPU forearm(i2c3);
+    MPU upper(i2c4);
 
     wrist.Connect();
 
@@ -197,4 +275,4 @@ int main(int argc, char* argv[])
     return 0;
 
 }
-
+*/

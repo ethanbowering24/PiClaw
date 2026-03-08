@@ -2,6 +2,7 @@
 #include "MPU6050.h"
 #include "QMC5883P.h"
 #include "Fusion.h"
+#include <chrono>
 
 #define SAMPLE_RATE 200
 
@@ -28,13 +29,16 @@ private:
     FusionBias bias;
     FusionAhrs ahrs;
 
+    bool firstRead = true;
+    std::chrono::_V2::steady_clock::time_point previousTime;
+
 
 public:
     MPU(I2Cdev &i2cDev, bool hasQMC=true);
     //MPU(I2Cdev &i2cDev, uint8_t mpu_address);
     void Calibrate();
     bool Connect();
-    void ReadFusion();
-
+    void ReadFusionOld();
+    bool ReadFusion(FusionEuler& euler);
 
 };
