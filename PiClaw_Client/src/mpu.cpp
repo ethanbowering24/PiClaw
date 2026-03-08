@@ -180,71 +180,70 @@ bool MPU::ReadFusion(FusionEuler& euler)
         firstRead = false;
     }
     
-    while (true)
+    
+    int16_t ax, ay, az;
+    int16_t gx, gy, gz;
+    mpu6050.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
+
+    //TODO replace magic numbers with named values
+    FusionVector gyroscope = {gx/131.0f, gy/131.0f, gz/131.0f};
+    FusionVector accelerometer = {ax/16384.0f, ay/16384.0f, az/16384.0f};
+    FusionVector magnetometer = FUSION_VECTOR_ZERO;
+    gyroscope = FusionBiasUpdate(&bias, gyroscope);
+
+    if (hasQMC)
     {
-        int16_t ax, ay, az;
-        int16_t gx, gy, gz;
-        mpu6050.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-    
-        //TODO replace magic numbers with named values
-        FusionVector gyroscope = {gx/131.0f, gy/131.0f, gz/131.0f};
-        FusionVector accelerometer = {ax/16384.0f, ay/16384.0f, az/16384.0f};
-        FusionVector magnetometer = FUSION_VECTOR_ZERO;
-        gyroscope = FusionBiasUpdate(&bias, gyroscope);
-
-        if (hasQMC)
-        {
-            int16_t mx ,my ,mz ;
-            qmc5883p.getRawMagnetic(&mx, &my, &mz);
-            magnetometer = {mx/1000.0f, my/1000.0f, mz/1000.0f};
-        }
-    
-        // Calculate delta time to compensate for gyroscope sample clock errors
-        auto currentTime = std::chrono::steady_clock::now();
-        std::chrono::duration<float> elapsed_seconds = currentTime - previousTime;
-        float deltaTime = elapsed_seconds.count();
-        previousTime = currentTime;
-
-        if (hasQMC)
-        {
-            FusionAhrsUpdate(&ahrs, gyroscope, accelerometer, magnetometer, deltaTime);
-        }
-        else
-        {
-            FusionAhrsUpdateNoMagnetometer(&ahrs, gyroscope, accelerometer, deltaTime);
-        }
-
-        // Print AHRS outputs
-        euler = FusionQuaternionToEuler(FusionAhrsGetQuaternion(&ahrs));
-
-        /*
-        const FusionVector earth = FusionAhrsGetEarthAcceleration(&ahrs);
-
-        printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f, X %0.1f, Y %0.1f, Z %0.1f\n",
-               euler.angle.roll, euler.angle.pitch, euler.angle.yaw,
-               earth.axis.x, earth.axis.y, earth.axis.z);
-        */
-
-        /*
-        FusionAhrsFlags flags = FusionAhrsGetFlags(&ahrs);
-        if (flags.accelerationRecovery)
-        {
-            std::cout << "ACCELERATION RECOVERY" << std::endl;
-        }
-        if (flags.angularRateRecovery)
-        {
-            std::cout << "ANGULAR RECOVERY" << std::endl;
-        }
-        if (flags.initialising)
-        {
-            std::cout << "INITIALIZING" << std::endl;
-        }
-        if (flags.magneticRecovery)
-        {
-            std::cout << "MAGNETIC RECOVERY" << std::endl;
-        }   
-        */
+        int16_t mx ,my ,mz ;
+        qmc5883p.getRawMagnetic(&mx, &my, &mz);
+        magnetometer = {mx/1000.0f, my/1000.0f, mz/1000.0f};
     }
+
+    // Calculate delta time to compensate for gyroscope sample clock errors
+    auto currentTime = std::chrono::steady_clock::now();
+    std::chrono::duration<float> elapsed_seconds = currentTime - previousTime;
+    float deltaTime = elapsed_seconds.count();
+    previousTime = currentTime;
+
+    if (hasQMC)
+    {
+        FusionAhrsUpdate(&ahrs, gyroscope, accelerometer, magnetometer, deltaTime);
+    }
+    else
+    {
+        FusionAhrsUpdateNoMagnetometer(&ahrs, gyroscope, accelerometer, deltaTime);
+    }
+
+    // Print AHRS outputs
+    euler = FusionQuaternionToEuler(FusionAhrsGetQuaternion(&ahrs));
+
+    /*
+    const FusionVector earth = FusionAhrsGetEarthAcceleration(&ahrs);
+
+    printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f, X %0.1f, Y %0.1f, Z %0.1f\n",
+            euler.angle.roll, euler.angle.pitch, euler.angle.yaw,
+            earth.axis.x, earth.axis.y, earth.axis.z);
+    */
+
+    /*
+    FusionAhrsFlags flags = FusionAhrsGetFlags(&ahrs);
+    if (flags.accelerationRecovery)
+    {
+        std::cout << "ACCELERATION RECOVERY" << std::endl;
+    }
+    if (flags.angularRateRecovery)
+    {
+        std::cout << "ANGULAR RECOVERY" << std::endl;
+    }
+    if (flags.initialising)
+    {
+        std::cout << "INITIALIZING" << std::endl;
+    }
+    if (flags.magneticRecovery)
+    {
+        std::cout << "MAGNETIC RECOVERY" << std::endl;
+    }   
+    */
+    
 
 }
 
