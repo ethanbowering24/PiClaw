@@ -1,3 +1,4 @@
+#pragma once
 #include "I2Cdev.h"
 #include "mpu.h"
 #include "Fusion.h"
