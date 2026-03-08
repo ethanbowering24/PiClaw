@@ -172,7 +172,7 @@ void MPU::ReadFusionOld()
 
 }
 
-bool MPU::ReadFusion(FusionEuler& euler)
+void MPU::ReadFusion(FusionEuler& euler)
 {
     if (firstRead)
     {

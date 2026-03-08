@@ -41,6 +41,6 @@ public:
     void Calibrate();
     bool Connect();
     void ReadFusionOld();
-    bool ReadFusion(FusionEuler& euler);
+    void ReadFusion(FusionEuler& euler);
 
 };
