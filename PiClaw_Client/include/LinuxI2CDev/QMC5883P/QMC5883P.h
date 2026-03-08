@@ -63,7 +63,7 @@ class QMC5883P {
         uint8_t getOSR();                   
         void setDSR(uint8_t dsr);           
         uint8_t getDSR();                   
-        bool softReset();                   
+        void softReset();                   
         bool selfTest();
         void setRange(uint8_t range);
         uint8_t getRange(); 
