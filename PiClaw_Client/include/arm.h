@@ -9,10 +9,10 @@ class Arm
     private:
         I2Cdev i2c1;
         I2Cdev i2c3;
-        I2Cdev i2c4;
+        //I2Cdev i2c4;
         MPU wrist;
         MPU forearm;
-        MPU upArm;
+        //MPU upArm;
 
     public:
         Arm();
