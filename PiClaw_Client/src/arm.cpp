@@ -49,10 +49,10 @@ void Arm::Read()
         forearm.ReadFusion(forearmEuler);
 
         std::cout << "Wrist:" << std::endl;
-        printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f, X %0.1f, Y %0.1f, Z %0.1f\n",
+        printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f\n",
                wristEuler.angle.roll, wristEuler.angle.pitch, wristEuler.angle.yaw);      
         std::cout << "Forearm:" << std::endl;    
-        printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f, X %0.1f, Y %0.1f, Z %0.1f\n",
+        printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f\n",
                forearmEuler.angle.roll, forearmEuler.angle.pitch, forearmEuler.angle.yaw);   
 
         next_loop_time += std::chrono::milliseconds(5);
