@@ -1,5 +1,6 @@
 #include "I2Cdev.h"
 #include "MPU6050.h"
+#include "QMC5883P.h"
 #include "Fusion.h"
 
 #define SAMPLE_RATE 200
@@ -7,8 +8,10 @@
 class MPU
 {
 private:
-    I2Cdev &i2cDev; //turn this into a reference so that other classes can share the i2c
+    I2Cdev &i2cDev; //can probably get rid of this
     MPU6050 mpu6050;
+    QMC5883P qmc5883p;
+    bool hasQMC;
     //int MPUOffsets[6] = {-262, 1702, 1307 , 193, 103, 74};// vert board
 
     /*
@@ -27,8 +30,8 @@ private:
 
 
 public:
-    MPU(I2Cdev &i2cDev);
-    MPU(I2Cdev &i2cDev, uint8_t mpu_address);
+    MPU(I2Cdev &i2cDev, bool hasQMC=true);
+    //MPU(I2Cdev &i2cDev, uint8_t mpu_address);
     void Calibrate();
     bool Connect();
     void ReadFusion();

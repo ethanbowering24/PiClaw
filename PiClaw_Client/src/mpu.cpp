@@ -10,24 +10,29 @@
 #include <vector>
 #include <algorithm>
 
-MPU::MPU(I2Cdev &i2cDev) : i2cDev(i2cDev), mpu6050(i2cDev)
+MPU::MPU(I2Cdev &i2cDev, bool hasQMC) : i2cDev(i2cDev), mpu6050(i2cDev), qmc5883p(i2cDev), hasQMC(hasQMC)
 {
 
 };
 
+/*
 MPU::MPU(I2Cdev &i2cDev, uint8_t mpu_address) : i2cDev(i2cDev), mpu6050(i2cDev, mpu_address)
 {
 
 };
+*/
 
 void MPU::Calibrate()
 {
     mpu6050.CalibrateAccel();
     mpu6050.CalibrateGyro();
-
     mpu6050.PrintActiveOffsets();
     // save to a file
 
+    if (hasQMC)
+    {
+        // QMC self test
+    }
 }
 
 bool MPU::Connect()
@@ -42,12 +47,37 @@ bool MPU::Connect()
         std::cout << "MPU6050 Connection Failed" << std::endl;
         return false;
     }
-    
+
     mpu6050.initialize(); 
     mpu6050.setDLPFMode(0x03);          // set DLPF
     mpu6050.setExternalFrameSync(0x00); // disable FSYNC
     mpu6050.setRate(0x04);              // Sample Rate = Gyroscope Output Rate / (1 + SMPLRT_DIV)
                                         //      1000/(1+4) = 200Hz
+
+    if (hasQMC)
+    {
+        if (qmc5883p.testConnection())
+        {
+            std::cout << "QMC5883P Connection Successful" << std::endl;\
+        }
+        else
+        {
+            std::cout << "QMC5883P Connection Failed" << std::endl;
+            return false;
+        }
+
+        qmc5883p.initialize();
+        qmc5883p.setMode(0x01); // normal mode
+        qmc5883p.setODR(0x03); //200Hz
+        qmc5883p.setRange(0x00); //30 gauss (?? Confirm this selection)
+    }
+    else
+    {
+        std::cout << "No QMC5883P" << std::endl;
+    }
+    
+    
+    
     
 /*
     std::cout << "RATE: " << static_cast<int>(mpu6050.getRate()) << std::endl;
@@ -80,8 +110,15 @@ void MPU::ReadFusion()
         //TODO replace magic numbers with named values
         FusionVector gyroscope = {gx/131.0f, gy/131.0f, gz/131.0f};
         FusionVector accelerometer = {ax/16384.0f, ay/16384.0f, az/16384.0f};
-        //FusionVector magnetometer = {1.0f, 0.0f, 0.0f};
+        FusionVector magnetometer = FUSION_VECTOR_ZERO;
         gyroscope = FusionBiasUpdate(&bias, gyroscope);
+
+        if (hasQMC)
+        {
+            int16_t mx ,my ,mz ;
+            qmc5883p.getRawMagnetic(&mx, &my, &mz);
+            magnetometer = {mx/1000.0f, my/1000.0f, mz/1000.0f};
+        }
     
         // Calculate delta time to compensate for gyroscope sample clock errors
         auto currentTime = std::chrono::steady_clock::now();
@@ -89,8 +126,14 @@ void MPU::ReadFusion()
         float deltaTime = elapsed_seconds.count();
         previousTime = currentTime;
 
-        //FusionAhrsUpdate(&ahrs, gyroscope, accelerometer, magnetometer, deltaTime);
-        FusionAhrsUpdateNoMagnetometer(&ahrs, gyroscope, accelerometer, deltaTime);
+        if (hasQMC)
+        {
+            FusionAhrsUpdate(&ahrs, gyroscope, accelerometer, magnetometer, deltaTime);
+        }
+        else
+        {
+            FusionAhrsUpdateNoMagnetometer(&ahrs, gyroscope, accelerometer, deltaTime);
+        }
 
         // Print AHRS outputs
         const FusionEuler euler = FusionQuaternionToEuler(FusionAhrsGetQuaternion(&ahrs));
@@ -132,20 +175,25 @@ int main(int argc, char* argv[])
 {
 
     I2Cdev i2c1("/dev/i2c-1");
+    I2Cdev i2c3("/dev/i2c-3");
+    I2Cdev i2c4("/dev/i2c-4");
 
-    MPU mpu(i2c1);
 
-    mpu.Connect();
+    MPU wrist(i2c1);
+    //MPU forearm(i2c3);
+    //MPU upper(i2c4);
+
+    wrist.Connect();
 
     //wiringPiSetupPinType(WPI_PIN_PHYS);
     //pinMode(26, INPUT);
     std::vector<std::string> args(argv, argv + argc);
     if (std::find(args.begin(), args.end(), "--calibrate") != args.end()) {
-        mpu.Calibrate();
+        wrist.Calibrate();
         return 0;
     }
     
-    mpu.ReadFusion();
+    wrist.ReadFusion();
     return 0;
 
 }
