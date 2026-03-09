@@ -241,12 +241,11 @@ void QMC5883P::setSetResetMode(uint8_t mode) {
  *  @brief  Performs a soft reset of the chip
  *  @return True if reset is successful
  */
-void QMC5883P::softReset() {
+bool QMC5883P::softReset() {
     i2cDev.writeBit(devAddr, QMC5883P_RA_CONTROL2, QMC5583P_CTRL2_SOFTRESET_BIT, 1);
     nanosleep((const struct timespec[]){{0, 50000000L}}, NULL);
-    i2cDev.writeBit(devAddr, QMC5883P_RA_CONTROL2, QMC5583P_CTRL2_SOFTRESET_BIT, 0); //I don't know why but this seems to be needed or else the device will always be stuck
-    //i2cDev.readBit(devAddr, QMC5883P_RA_CONTROL2, QMC5583P_CTRL2_SOFTRESET_BIT, buffer);
-    //return buffer[0]==0;
+    i2cDev.readBit(devAddr, QMC5883P_RA_CONTROL2, QMC5583P_CTRL2_SOFTRESET_BIT, buffer);
+    return buffer[0]==0;
 }
 
 /*!
