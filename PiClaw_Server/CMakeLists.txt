@@ -10,7 +10,8 @@ if(IS_PI)
     add_executable(${TARGET_NAME} ${SERVER_SOURCES})
     
     find_library(WIRINGPI_LIB wiringPi REQUIRED)
-    target_link_libraries(${TARGET_NAME} PRIVATE ${WIRINGPI_LIB}) 
+    find_library(PIGPIO_LIB pigpio REQUIRED)
+    target_link_libraries(${TARGET_NAME} PRIVATE ${WIRINGPI_LIB} ${PIPGPIO_LIB}) 
 
 else()
     # --- BUILD FOR PC (CHECK ONLY) ---
