@@ -2,6 +2,7 @@ project(PiClaw_Server)
 
 set(SERVER_SOURCES
     src/main.cpp
+    src/servo.cpp
 )
 
 if(IS_PI)
