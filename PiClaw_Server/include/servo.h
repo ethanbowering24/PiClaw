@@ -7,6 +7,7 @@ class Servo
         int pinNumber;
         std::pair<int,int> limits;
         int powerupAngle;
+        int currentAngle;
 
 
     public:
@@ -14,5 +15,6 @@ class Servo
         bool writeAngle(int angle);
         bool config();
         bool initialize();
+        static int angleToPulseWidth(int angle);
 
-}
+};
