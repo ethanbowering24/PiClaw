@@ -68,6 +68,7 @@ int main(void){
     //Infinite loop passing data from sensors to motors
     while (1){
         //updates currentAngles
+        //TODO: Look into linear interpolation for reducing potential jerking motion. See if any even occurs first
         getLatestAngles();
         for (int i=0; i<6; i++){
             motors[i].writeAngle(currentAngles[i]);
