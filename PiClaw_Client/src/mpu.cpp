@@ -216,6 +216,7 @@ void MPU::ReadFusion(FusionEuler& euler)
     // Print AHRS outputs
     euler = FusionQuaternionToEuler(FusionAhrsGetQuaternion(&ahrs));
 
+
     /*
     const FusionVector earth = FusionAhrsGetEarthAcceleration(&ahrs);
 

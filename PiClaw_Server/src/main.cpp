@@ -129,7 +129,7 @@ int init_socket(){
 int check_socket_open(){
     return 0;
 }
-
+/*
 int main(void){
 
     //Socket setup
@@ -187,4 +187,23 @@ int main(void){
     }
     return 0;
 
+}*/
+
+int main()
+{
+    UdpReceiver sockRecv;
+    sockRecv.init(8080);
+    while (true)
+    {
+        Packet packet;
+        if (sockRecv.receive(packet))
+        {
+            std::cout << packet.id << std::endl;
+        }
+        else
+        {
+            std::cerr << "recv failed" << std::endl;
+        }
+    }
+    
 }

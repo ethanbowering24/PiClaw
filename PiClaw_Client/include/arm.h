@@ -2,7 +2,7 @@
 #include "I2Cdev.h"
 #include "mpu.h"
 #include "Fusion.h"
-
+#include "packet.h"
 #include <iostream>
 
 class Arm
@@ -19,5 +19,5 @@ class Arm
         Arm();
         bool Connect();
         void Calibrate();
-        void Read();
+        void Read(Packet&);
 };

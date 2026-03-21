@@ -2,6 +2,7 @@
 #include "I2Cdev.h"
 #include "mpu.h"
 #include "Fusion.h"
+#include "packet.h"
 
 #include <iostream>
 #include <chrono>
@@ -36,7 +37,7 @@ void Arm::Calibrate()
     std::cout << "Forearm Calibration: " << std::endl;
     forearm.Calibrate();
 }
-
+/*
 void Arm::Read()
 {
     auto next_loop_time = std::chrono::steady_clock::now();
@@ -58,5 +59,38 @@ void Arm::Read()
         next_loop_time += std::chrono::milliseconds(5);
         std::this_thread::sleep_until(next_loop_time);
     }
+    
+}
+*/
+void Arm::Read(Packet& packet)
+{
+
+        FusionEuler wristEuler;
+        wrist.ReadFusion(wristEuler);
+
+        FusionEuler forearmEuler;
+        forearm.ReadFusion(forearmEuler);
+
+        packet.values[0] = wristEuler.angle.pitch;
+        packet.values[1] = wristEuler.angle.roll;
+        packet.values[2] = wristEuler.angle.yaw;
+        packet.values[3] = forearmEuler.angle.pitch;
+        packet.values[4] = forearmEuler.angle.roll;
+        packet.values[5] = forearmEuler.angle.yaw;
+        packet.values[6] = 0;
+        packet.values[7] = 0;
+        packet.values[8] = 0;
+        //packet.values[9] = wristEuler.angle.pitch;
+
+
+
+
+        std::cout << "Wrist:" << std::endl;
+        printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f\n",
+               wristEuler.angle.roll, wristEuler.angle.pitch, wristEuler.angle.yaw);      
+        std::cout << "Forearm:" << std::endl;    
+        printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f\n",
+               forearmEuler.angle.roll, forearmEuler.angle.pitch, forearmEuler.angle.yaw);   
+
     
 }

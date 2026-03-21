@@ -9,6 +9,7 @@
 #include <vector>
 #include <algorithm>
 #include <memory>
+#include <thread>
 
 int main(int argc, char* argv[])
 {
@@ -29,13 +30,22 @@ int main(int argc, char* argv[])
         return 0;
     }
 
+    sockSend.init("Client-Server", "8080");
+    int id = 0;
     while (true)
     {
-        /* code */
+        auto next_loop_time = std::chrono::steady_clock::now();
+        Packet packet;
+        //arm.Read(packet);
+        packet.id = id++;
+        if(!sockSend.send(packet))
+        {
+            std::cerr << "send failed" << std::endl;
+        }
+        next_loop_time += std::chrono::milliseconds(5);
+        std::this_thread::sleep_until(next_loop_time);
     }
     
-    
-    arm.Read();
     return 0;
 
 }

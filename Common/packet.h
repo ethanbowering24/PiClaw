@@ -1,4 +1,6 @@
+#pragma once
+
 struct Packet {
     int id;
-    float values[6];
+    float values[9];
 };
