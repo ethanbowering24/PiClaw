@@ -17,7 +17,7 @@ int main(int argc, char* argv[])
     Arm arm;
     UdpSender sockSend;
 
-    if(!sockSend.init("Claw-Sevrer", "8080"))
+    if(!sockSend.init("Claw-Server", "8080"))
     {
         std::cerr << "Socket failed" << std::endl;
         return -1;
