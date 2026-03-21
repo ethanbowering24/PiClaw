@@ -26,5 +26,5 @@ endif()
 # --- COMMON INCLUDES ---
 target_include_directories(${TARGET_NAME} PRIVATE 
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_SOURCE_DIR}/common
+    ${CMAKE_SOURCE_DIR}/Common
 )

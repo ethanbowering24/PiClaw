@@ -36,5 +36,5 @@ target_include_directories(${TARGET_NAME} PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/include/LinuxI2CDev/I2Cdev
     ${CMAKE_CURRENT_SOURCE_DIR}/include/LinuxI2CDev/MPU6050
     ${CMAKE_CURRENT_SOURCE_DIR}/include/LinuxI2CDev/QMC5883P
-    ${CMAKE_SOURCE_DIR}/common
+    ${CMAKE_SOURCE_DIR}/Common
 )
