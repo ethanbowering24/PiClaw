@@ -8,7 +8,7 @@
 #include <chrono>
 #include <thread>
 
-Arm::Arm() : i2c1("/dev/i2c-1"), i2c3("/dev/i2c-3"), wrist(i2c1, false), forearm(i2c3, false)
+Arm::Arm() : i2c1("/dev/i2c-1"), i2c3("/dev/i2c-3"), wrist(i2c1), forearm(i2c3)
 {
 
 }
@@ -34,8 +34,8 @@ void Arm::Calibrate()
     std::cout << "Wrist Calibration: " << std::endl;
     wrist.Calibrate();
 
-    std::cout << "Forearm Calibration: " << std::endl;
-    forearm.Calibrate();
+    //std::cout << "Forearm Calibration: " << std::endl;
+    //forearm.Calibrate();
 }
 /*
 void Arm::Read()
@@ -69,14 +69,14 @@ void Arm::Read(Packet& packet)
         wrist.ReadFusion(wristEuler);
 
         FusionEuler forearmEuler;
-        forearm.ReadFusion(forearmEuler);
+        //forearm.ReadFusion(forearmEuler);
 
         packet.values[0] = wristEuler.angle.pitch;
         packet.values[1] = wristEuler.angle.roll;
         packet.values[2] = wristEuler.angle.yaw;
-        packet.values[3] = forearmEuler.angle.pitch;
-        packet.values[4] = forearmEuler.angle.roll;
-        packet.values[5] = forearmEuler.angle.yaw;
+        packet.values[3] = 0;//forearmEuler.angle.pitch;
+        packet.values[4] = 0;//forearmEuler.angle.roll;
+        packet.values[5] = 0;//forearmEuler.angle.yaw;
         packet.values[6] = 0;
         packet.values[7] = 0;
         packet.values[8] = 0;
@@ -88,9 +88,9 @@ void Arm::Read(Packet& packet)
         std::cout << "Wrist:" << std::endl;
         printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f\n",
                wristEuler.angle.roll, wristEuler.angle.pitch, wristEuler.angle.yaw);      
-        std::cout << "Forearm:" << std::endl;    
+        /*std::cout << "Forearm:" << std::endl;    
         printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f\n",
-               forearmEuler.angle.roll, forearmEuler.angle.pitch, forearmEuler.angle.yaw);   
+               forearmEuler.angle.roll, forearmEuler.angle.pitch, forearmEuler.angle.yaw);   */
 
     
 }

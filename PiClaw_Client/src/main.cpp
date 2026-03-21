@@ -17,6 +17,8 @@ int main(int argc, char* argv[])
     Arm arm;
     UdpSender sockSend;
 
+    arm.Connect();
+
     if(!sockSend.init("Claw-Server", "8080"))
     {
         std::cerr << "Socket failed" << std::endl;
@@ -36,7 +38,7 @@ int main(int argc, char* argv[])
     {
         auto next_loop_time = std::chrono::steady_clock::now();
         Packet packet;
-        //arm.Read(packet);
+        arm.Read(packet);
         packet.id = id++;
         if(!sockSend.send(packet))
         {

@@ -199,6 +199,7 @@ int main()
         if (sockRecv.receive(packet))
         {
             std::cout << packet.id << std::endl;
+            std::cout << "Pitch: " << packet.values[0] << " Roll: " << packet.values[1] << " Yaw: " << packet.values[2] << std::endl;
         }
         else
         {
