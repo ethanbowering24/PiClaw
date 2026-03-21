@@ -11,5 +11,5 @@ else()
 endif()
 
 add_subdirectory(PiClaw_Client)
-#add_subdirectory(PiClaw_Server)
+add_subdirectory(PiClaw_Server)
 
