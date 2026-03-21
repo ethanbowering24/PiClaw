@@ -12,7 +12,7 @@ if(IS_PI)
     
     find_library(WIRINGPI_LIB wiringPi REQUIRED)
     find_library(PIGPIO_LIB pigpio REQUIRED)
-    target_link_libraries(${TARGET_NAME} PRIVATE ${WIRINGPI_LIB} ${PIPGPIO_LIB}) 
+    target_link_libraries(${TARGET_NAME} PRIVATE ${WIRINGPI_LIB} ${PIGPIO_LIB}) 
 
 else()
     # --- BUILD FOR PC (CHECK ONLY) ---
