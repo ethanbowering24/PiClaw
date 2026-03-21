@@ -10,6 +10,14 @@ else()
     message(STATUS "Target Hardware: PC (check for compile errors only)")
 endif()
 
-add_subdirectory(PiClaw_Client)
-add_subdirectory(PiClaw_Server)
+option(BUILD_CLIENT "Build client" ON)  # ON is the default
+option(BUILD_SERVER "Build server" ON)  # ON is the default
+
+if(BUILD_CLIENT)
+    add_subdirectory(PiClaw_Client)
+endif()
+
+if(BUILD_SERVER)
+    add_subdirectory(PiClaw_Server)
+endif()
 
