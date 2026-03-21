@@ -86,8 +86,8 @@ void Arm::Read(Packet& packet)
 
 
         std::cout << "Wrist:" << std::endl;
-        printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f\n",
-               wristEuler.angle.roll, wristEuler.angle.pitch, wristEuler.angle.yaw);      
+        printf("Pitch %0.1f, Roll %0.1f, Yaw %0.1f\n",
+               wristEuler.angle.pitch, wristEuler.angle.roll, wristEuler.angle.yaw);      
         /*std::cout << "Forearm:" << std::endl;    
         printf("Roll %0.1f, Pitch %0.1f, Yaw %0.1f\n",
                forearmEuler.angle.roll, forearmEuler.angle.pitch, forearmEuler.angle.yaw);   */
