@@ -52,7 +52,7 @@ bool MPU::Connect()
     mpu6050.initialize(); 
     mpu6050.setDLPFMode(0x03);          // set DLPF
     mpu6050.setExternalFrameSync(0x00); // disable FSYNC
-    mpu6050.setRate(0x04);              // Sample Rate = Gyroscope Output Rate / (1 + SMPLRT_DIV)
+    mpu6050.setRate(0x09);              // Sample Rate = Gyroscope Output Rate / (1 + SMPLRT_DIV)
                                         //      1000/(1+4) = 200Hz
 
     if (hasQMC)
@@ -69,7 +69,7 @@ bool MPU::Connect()
 
         qmc5883p.initialize();
         qmc5883p.setMode(0x01); // normal mode
-        qmc5883p.setODR(0x03); //200Hz
+        qmc5883p.setODR(0x02); //100Hz
         qmc5883p.setRange(0x00); //30 gauss (?? Confirm this selection)
     }
     else

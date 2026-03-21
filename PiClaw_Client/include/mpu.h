@@ -6,7 +6,7 @@
 #include "Fusion.h"
 #include <chrono>
 
-#define SAMPLE_RATE 200
+#define SAMPLE_RATE 100
 
 class MPU
 {
