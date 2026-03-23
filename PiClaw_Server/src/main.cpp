@@ -57,17 +57,25 @@ void getLatestAngles(){
     WILL ROUNDING BE DONE HERE OR IN ETHANS SENDING DATA CODE
     
     */
-    int maxYaw = std::max({sensorData[2], sensorData[5], sensorData[8]});
-    currentAngles[0] = maxYaw;
+    int yawValues[3] = {sensorData[2], sensorData[5], sensorData[8]};
+
+    int maxIdx = 0;
+    for (int i = 1; i < 3; i++) {
+        if (std::abs(yawValues[i]) > std::abs(yawValues[maxIdx])) {
+            maxIdx = i;
+        }
+    }
+    int maxYaw = yawValues[maxIdx]; // Retains original sign
+    currentAngles[0] = maxYaw+90;
 
     //Motor 2 angle
-    currentAngles[1] = sensorData[6];
+    currentAngles[1] = 90-sensorData[6];
 
     //Motor 3 angle
-    currentAngles[2] = sensorData[3] - sensorData[6];
+    currentAngles[2] = (90+sensorData[3]) - (90-sensorData[6]);
 
     //Motor 4 angle
-    currentAngles[3] = sensorData[0] - sensorData[3] - sensorData[6];
+    currentAngles[3] = (180-sensorData[0]) - (sensorData[3]+90) - (90-sensorData[6]);
 
     //Motor 5 angle
     currentAngles[4] = sensorData[1];
