@@ -48,8 +48,8 @@ bool Servo::initialize()
 
 //Utility functions
 int Servo::angleToPulseWidth(int angle){
-    //Min PW = 500us
-    //Max PW = 2500us
+    //Min PW = 1000us
+    //Max PW = 2000us
     //Formula used: PW = MIN_PW+(angle/180deg)*(MAX_PW-MIN_PW)
-    return static_cast<int>(500+(angle/180)*(2000));
+    return static_cast<int>(1000+(angle/180)*(1000));
 }
