@@ -96,7 +96,7 @@ void MPU::ReadFusionOld()
 
     FusionBiasInitialise(&bias, SAMPLE_RATE);
     FusionAhrsInitialise(&ahrs);
-    //FusionAhrsSetSettings(&ahrs, &settings);
+    FusionAhrsSetSettings(&ahrs, &settings);
 
     auto next_loop_time = std::chrono::steady_clock::now();
     previousTime = std::chrono::steady_clock::now();
