@@ -17,6 +17,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <thread>
+#include <iomanip> // Required for std::fixed and std::setprecision
 
 //Change as needed
 //proposed data format: [0,1,2,3,4,5,6,7,8,9]
@@ -213,8 +214,9 @@ int main(void){
 
 int main()
 {
+    std::cout << std::fixed << std::setprecision(2);
     gpioInitialise();
-    Servo wrist(2, std::pair<int,int>{0, 180}, 0);
+    Servo wrist(2, std::pair<int,int>{0, 180}, 90, 90);
     wrist.initialize();
     UdpReceiver sockRecv;
     sockRecv.init(8080);
@@ -226,7 +228,7 @@ int main()
             std::cout << packet.id << std::endl;
             std::cout << "Pitch: " << packet.values[0] << " Roll: " << packet.values[1] << " Yaw: " << packet.values[2] << std::endl;
             getLatestAngles(packet);
-            wrist.writeAngle(currentAngles[MOTOR_WRIST_ROLL]);
+            wrist.writeAngle(currentAngles[MOTOR_WRIST_ROLL]+90);
         }
         else
         {

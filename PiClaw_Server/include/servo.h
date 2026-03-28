@@ -8,10 +8,11 @@ class Servo
         std::pair<int,int> limits;
         int powerupAngle;
         int currentAngle;
+        int offset;
 
 
     public:
-        Servo(int pinNumber, std::pair<int,int> limits, int powerupAngle);
+        Servo(int pinNumber, std::pair<int,int> limits, int offset, int powerupAngle);
         bool writeAngle(int angle);
         //Is this doing anything?
         bool config();
