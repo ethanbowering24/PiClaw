@@ -20,7 +20,7 @@ private:
     
     const FusionAhrsSettings settings = {
         .convention = FusionConventionNwu,
-        .gain = 0.5f,
+        .gain = 0,
         .gyroscopeRange = 0,
         .accelerationRejection = 0,
         .magneticRejection = 0,
