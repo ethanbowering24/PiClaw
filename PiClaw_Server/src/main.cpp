@@ -36,10 +36,18 @@ const int PORT = 8080;
 const int BUFFER_SIZE = 1024;
 char buffer[BUFFER_SIZE]; //Defining buffer globally so that we can constantly access it from another thread
 
-//Array storing current angles of each motor, initialised to ready position, slight bend in the elbow
-int currentAngles[6] = {90, 140, 60, 180, 180, 130};
+enum {
+    MOTOR_BICEP_YAW = 0,
+    MOTOR_BICEP_PITCH,
+    MOTOR_ELBOW_PITCH,
+    MOTOR_WRIST_PITCH,
+    MOTOR_WRIST_ROLL,
+    MOTOR_CLAW,
+    MOTOR_COUNT  // bonus: tracks array size
+};
 
-int sensorData[10];
+//Array storing current angles of each motor, initialised to ready position, slight bend in the elbow
+int currentAngles[MOTOR_COUNT] = {90, 140, 60, 180, 180, 130};
 
 //Using GPIO pins 0,2,3,4,5,6
 /*
@@ -50,14 +58,16 @@ int sensorData[10];
     M5 - GPIO5 - Min 000 - Max 180
     M6 - GPIO6 - Min 120 - Max 180
 */
-void getLatestAngles(){
+void getLatestAngles(const Packet& packet){
     
     /*
     Insert code to fetch latest sensor angles here
     WILL ROUNDING BE DONE HERE OR IN ETHANS SENDING DATA CODE
     
     */
-    int yawValues[3] = {sensorData[2], sensorData[5], sensorData[8]};
+
+    /*
+    int yawValues[3] = {packet.values[WRIST_YAW], packet.values[FOREARM_YAW], packet.values[UPARM_YAW]};
 
     int maxIdx = 0;
     for (int i = 1; i < 3; i++) {
@@ -69,20 +79,24 @@ void getLatestAngles(){
     currentAngles[0] = maxYaw+90;
 
     //Motor 2 angle
-    currentAngles[1] = 90-sensorData[6];
+    currentAngles[1] = 90-packet.values[6];
 
     //Motor 3 angle
-    currentAngles[2] = (90+sensorData[3]) - (90-sensorData[6]);
+    currentAngles[2] = (90+packet.values[3]) - (90-packet.values[6]);
 
     //Motor 4 angle
-    currentAngles[3] = (180-sensorData[0]) - (sensorData[3]+90) - (90-sensorData[6]);
+    currentAngles[3] = (180-packet.values[0]) - (packet.values[3]+90) - (90-packet.values[6]);
 
     //Motor 5 angle
-    currentAngles[4] = sensorData[1];
+    currentAngles[4] = packet.values[1];
 
     //Motor 6 angle
     //This assumes that we recieve the correct angle directly from the glove side Pi
-    currentAngles[5] = sensorData[10];
+    currentAngles[5] = packet.values[10];
+    */
+
+    currentAngles[MOTOR_WRIST_ROLL]=packet.values[WRIST_ROLL];
+    //currentAngles[MOTOR_WRIST_PITCH]
 }
 
 void udp_reader_thread(int sockfd){
@@ -199,6 +213,9 @@ int main(void){
 
 int main()
 {
+    gpioInitialise();
+    Servo wrist(2, std::pair<int,int>{0, 180}, 0);
+    wrist.initialize();
     UdpReceiver sockRecv;
     sockRecv.init(8080);
     while (true)
@@ -208,6 +225,8 @@ int main()
         {
             std::cout << packet.id << std::endl;
             std::cout << "Pitch: " << packet.values[0] << " Roll: " << packet.values[1] << " Yaw: " << packet.values[2] << std::endl;
+            getLatestAngles(packet);
+            wrist.writeAngle(currentAngles[MOTOR_WRIST_ROLL]);
         }
         else
         {

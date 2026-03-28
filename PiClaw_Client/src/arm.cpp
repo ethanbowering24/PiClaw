@@ -8,7 +8,7 @@
 #include <chrono>
 #include <thread>
 
-Arm::Arm() : i2c1("/dev/i2c-1"), i2c3("/dev/i2c-3"), wrist(i2c1), forearm(i2c3)
+Arm::Arm() : i2c1("/dev/i2c-1"), i2c3("/dev/i2c-3"), wrist(i2c1, false), forearm(i2c3)
 {
 
 }
