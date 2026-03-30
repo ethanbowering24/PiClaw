@@ -228,7 +228,7 @@ int main()
             std::cout << packet.id << std::endl;
             std::cout << "Pitch: " << packet.values[0] << " Roll: " << packet.values[1] << " Yaw: " << packet.values[2] << std::endl;
             getLatestAngles(packet);
-            wrist.writeAngle(currentAngles[MOTOR_WRIST_ROLL]+90);
+            wrist.writeAngle(currentAngles[MOTOR_WRIST_ROLL]);
         }
         else
         {
