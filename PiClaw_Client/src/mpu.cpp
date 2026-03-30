@@ -14,6 +14,7 @@ MPU::MPU(I2Cdev &i2cDev, bool hasQMC) : i2cDev(i2cDev), mpu6050(i2cDev), qmc5883
 {
     FusionBiasInitialise(&bias, SAMPLE_RATE);
     FusionAhrsInitialise(&ahrs);
+    FusionAhrsSetSettings(&ahrs, &settings);
 };
 
 /*
