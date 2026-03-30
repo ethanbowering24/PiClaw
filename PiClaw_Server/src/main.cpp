@@ -97,6 +97,8 @@ void getLatestAngles(const Packet& packet){
     */
 
     currentAngles[MOTOR_WRIST_ROLL]=packet.values[WRIST_ROLL];
+    currentAngles[MOTOR_WRIST_PITCH]=packet.values[WRIST_PITCH];
+
     //currentAngles[MOTOR_WRIST_PITCH]
 }
 
@@ -216,8 +218,10 @@ int main()
 {
     std::cout << std::fixed << std::setprecision(2);
     gpioInitialise();
-    Servo wrist(2, std::pair<int,int>{0, 180}, 0);
-    wrist.initialize();
+    Servo wristRoll(2, std::pair<int,int>{0, 180}, 0);
+    Servo wristPitch(2, std::pair<int,int>{0, 180}, 0);
+    wristRoll.initialize();
+    wristPitch.initialize();
     UdpReceiver sockRecv;
     sockRecv.init(8080);
     while (true)
@@ -228,7 +232,9 @@ int main()
             std::cout << packet.id << std::endl;
             std::cout << "Pitch: " << packet.values[0] << " Roll: " << packet.values[1] << " Yaw: " << packet.values[2] << std::endl;
             getLatestAngles(packet);
-            wrist.writeAngle(currentAngles[MOTOR_WRIST_ROLL]);
+            wristRoll.writeAngle(currentAngles[MOTOR_WRIST_ROLL]);
+            wristPitch.writeAngle(currentAngles[MOTOR_WRIST_PITCH]);
+
         }
         else
         {
