@@ -219,7 +219,7 @@ int main()
     std::cout << std::fixed << std::setprecision(2);
     gpioInitialise();
     Servo wristRoll(2, std::pair<int,int>{0, 180}, 0);
-    Servo wristPitch(2, std::pair<int,int>{0, 180}, 0);
+    Servo wristPitch(3, std::pair<int,int>{0, 180}, 0);
     wristRoll.initialize();
     wristPitch.initialize();
     UdpReceiver sockRecv;
