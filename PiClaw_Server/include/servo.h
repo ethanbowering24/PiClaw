@@ -13,7 +13,7 @@ class Servo
 
     public:
         Servo(int pinNumber, std::pair<int,int> limits, int powerupAngle);
-        bool writeAngle(int angle);
+        int writeAngle(int angle);
         //Is this doing anything?
         bool config();
         bool initialize();
