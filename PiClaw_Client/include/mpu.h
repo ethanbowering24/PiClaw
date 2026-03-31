@@ -11,11 +11,10 @@
 class MPU
 {
 private:
-    I2Cdev &i2cDev; //can probably get rid of this
+    I2Cdev &i2cDev;
     MPU6050 mpu6050;
     QMC5883P qmc5883p;
     bool hasQMC;
-    //int MPUOffsets[6] = {-262, 1702, 1307 , 193, 103, 74};// vert board
 
     
     const FusionAhrsSettings settings = {
@@ -37,10 +36,8 @@ private:
 
 public:
     MPU(I2Cdev &i2cDev, bool hasQMC=true);
-    //MPU(I2Cdev &i2cDev, uint8_t mpu_address);
     void Calibrate();
     bool Connect();
-    void ReadFusionOld();
-    void ReadFusion(FusionEuler& euler);
+    FusionEuler ReadFusion();
 
 };
