@@ -24,8 +24,6 @@ int main(int argc, char* argv[])
         std::cerr << "Socket failed" << std::endl;
         return -1;
     }
-    //wiringPiSetupPinType(WPI_PIN_PHYS);
-    //pinMode(26, INPUT);
     std::vector<std::string> args(argv, argv + argc);
     if (std::find(args.begin(), args.end(), "--calibrate") != args.end()) {
         arm.Calibrate();
@@ -37,9 +35,9 @@ int main(int argc, char* argv[])
     while (true)
     {
         auto next_loop_time = std::chrono::steady_clock::now();
-        Packet packet;
-        arm.Read(packet);
+        Packet packet = arm.Read();
         packet.id = id++;
+        std::cout << packet.PacketToString() << std::endl;
         if(!sockSend.send(packet))
         {
             std::cerr << "send failed" << std::endl;
