@@ -15,6 +15,7 @@ enum {
     UPARM_ROLL,
     UPARM_PITCH,
     UPARM_YAW,
+    CLAW,
     INDEX_COUNT  // bonus: tracks array size
 };
 
@@ -27,6 +28,7 @@ struct Packet {
         std::ostringstream ss;
         ss << std::fixed << std::setprecision(2);
         ss << "Packet ID: " << id << "\n";
+        ss << "Claw: " << values[CLAW] << "\n";
         ss << "            Roll    Pitch    Yaw\n";
         ss << "Wrist:      " << values[WRIST_ROLL]      << "    " << values[WRIST_PITCH]    << "    " << values[WRIST_YAW]      << "\n";
         ss << "Forearm:    " << values[FOREARM_ROLL]    << "    " << values[FOREARM_PITCH]  << "    " << values[FOREARM_YAW]    << "\n";
