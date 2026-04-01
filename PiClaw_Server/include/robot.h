@@ -17,16 +17,16 @@ class Robot
 
         enum ServoIndex 
         { 
-            WRIST_ROLL, 
-            WRIST_PITCH, 
-            FOREARM_PITCH, 
-            UPARM_PITCH, 
-            UPARM_YAW, 
-            CLAW, 
-            COUNT 
+            SERVO_WRIST_ROLL, 
+            SERVO_WRIST_PITCH, 
+            SERVO_FOREARM_PITCH, 
+            SERVO_UPARM_PITCH, 
+            SERVO_UPARM_YAW, 
+            SERVO_CLAW, 
+            SERVO_COUNT 
         };
 
-        std::array<Servo, COUNT> servos {{
+        std::array<Servo, SERVO_COUNT> servos {{
             {WRISTROLL_PIN,    std::pair<int,int>{0, 180},  0,  0, "WristRoll"},
             {WRISTPITCH_PIN,   std::pair<int,int>{0, 180}, 90,  0, "WristPitch"},
             {FOREARMPITCH_PIN, std::pair<int,int>{0, 180}, 90,  0, "ForearmPitch"},
