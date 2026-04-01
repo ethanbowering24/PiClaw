@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <utility>
 
 class Servo
@@ -9,13 +10,12 @@ class Servo
         int powerupAngle;
         int currentAngle;
         int offset;
-
-
+        
+        
     public:
-        Servo(int pinNumber, std::pair<int,int> limits, int powerupAngle);
+        std::string name;
+        Servo(int pinNumber, std::pair<int,int> limits, int powerupAngle, int offset=0, std::string name="");
         bool writeAngle(int angle);
-        //Is this doing anything?
-        bool config();
         bool initialize();
         static int angleToPulseWidth(int angle);
 

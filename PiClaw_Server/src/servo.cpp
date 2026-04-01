@@ -6,7 +6,8 @@
 
 
 //limits is of the form {min_angle, max_angle}
-Servo::Servo(int pinNumber, std::pair<int,int> limits, int powerupAngle): pinNumber(pinNumber), limits(limits), powerupAngle(powerupAngle)
+Servo::Servo(int pinNumber, std::pair<int,int> limits, int powerupAngle, int offset, std::string name): 
+    pinNumber(pinNumber), limits(limits), powerupAngle(powerupAngle), offset(offset), name(name)
 {
 }
 
