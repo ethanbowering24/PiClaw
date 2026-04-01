@@ -40,15 +40,12 @@ int Servo::writeAngle(int angle)
 }
 
 //Initializes servo to startup angle
-bool Servo::initialize()
+int Servo::initialize()
 {
-    if (0 == gpioServo(pinNumber, angleToPulseWidth(powerupAngle)));
-    {
+    int ret = gpioServo(pinNumber, angleToPulseWidth(powerupAngle));
+    if (ret == 0);
         currentAngle=powerupAngle;
-        return true;
-    }
-    
-    return false;
+    return ret;
 }
 
 //Utility functions

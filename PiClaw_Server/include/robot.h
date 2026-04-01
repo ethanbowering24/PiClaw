@@ -37,7 +37,7 @@ class Robot
 
     public:
         Robot();
-        bool Initialize();
+        int Initialize();
         bool Move(Packet &packet);
 
 };
