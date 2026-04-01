@@ -24,7 +24,7 @@ bool Robot::Initialize()
     return true;
 }
 
-bool Robot::Move(Packet& packet)
+bool Robot::Move(Packet& packet) //TODO this needs to now write angles to the servos
 {
     return true;
 }
