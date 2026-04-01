@@ -15,7 +15,7 @@ class Servo
     public:
         std::string name;
         Servo(int pinNumber, std::pair<int,int> limits, int powerupAngle, int offset=0, std::string name="");
-        bool writeAngle(int angle);
+        int writeAngle(int angle);
         bool initialize();
         static int angleToPulseWidth(int angle);
 

@@ -11,32 +11,32 @@ Servo::Servo(int pinNumber, std::pair<int,int> limits, int powerupAngle, int off
 {
 }
 
-bool Servo::writeAngle(int angle)
+int Servo::writeAngle(int angle)
 {
-    int angleToWrite = angle;
-
 
     if (angle > limits.second){
         //Angle past servo max, write max angle instead
-        angleToWrite=limits.second;
+        angle=limits.second;
     }
     else if (angle <limits.first){
         //Angle below servo min, write min angle instead
-        angleToWrite=limits.first;
+        angle=limits.first;
     }
 
     //if angle within 1 degree of last angle, dont upate motor to prevent jitters
     //When testing, comment out this code if the arm doesn't move as nicely as needed
-    int angleDelta = std::abs(angleToWrite-currentAngle);
+    int angleDelta = std::abs(angle-currentAngle);
     if (angleDelta <= 1){
         //One degree difference, make no changes
         return true;
     }
 
-    int pulseWidth = angleToPulseWidth(angleToWrite);
-    gpioServo(pinNumber, pulseWidth);
-    currentAngle=angleToWrite;
-    return true;
+    int pulseWidth = angleToPulseWidth(angle);
+    int returnCode = gpioServo(pinNumber, pulseWidth);
+    if (returnCode == 0){
+        currentAngle=angle;
+    }
+    return returnCode;
 }
 
 //Initializes servo to startup angle
