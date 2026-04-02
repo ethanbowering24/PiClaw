@@ -8,7 +8,7 @@ class ADC
         I2Cdev &i2cDev;
         ADS1115 adc1115;
 
-        static int ReadingToPercentage(int reading);
+        static float ReadingToPercentage(float reading);
         
 
 

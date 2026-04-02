@@ -23,7 +23,14 @@ bool ADC::Connect()
 int16_t ADC::Read()
 {
     //adc1115.computeVolts(adc1115.readADC_SingleEnded(0));
-    return adc1115.readADC_SingleEnded(0);
+    int16_t adc_raw = adc1115.readADC_SingleEnded(0);
+    float adc_voltage = adc1115.computeVolts(adc_raw);
+    return ReadingToPercentage(adc_voltage);
+
 }
 
-//TODO: scale this reading into a percentage
+static float ReadingToPercentage(float adc_voltage){
+    float scale = 0.2;
+    float percentage = (scale * adc_voltage);
+    return percentage;
+}
