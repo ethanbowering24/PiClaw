@@ -30,7 +30,7 @@ int main(int argc, char* argv[])
         return 0;
     }
 
-    sockSend.init("Client-Server", "8080");
+    sockSend.init("Claw-Server", "8080");
     int id = 0;
     while (true)
     {
