@@ -26,17 +26,23 @@ int main()
         return -1;
     }
     
+    int lastPacketID = -1;
     while (true)
     {
         Packet packet;
-        if (sockRecv.receive(packet))
+        if (sockRecv.receive(packet) && packet.id > lastPacketID)
         {
+            lastPacketID = packet.id;
             robot.Move(packet);
             std::cout << packet.PacketToString() << std::endl;
             //getLatestAngles(packet);
             //wristRoll.writeAngle(currentAngles[MOTOR_WRIST_ROLL]);
             //wristPitch.writeAngle(currentAngles[MOTOR_WRIST_PITCH]);
 
+        }
+        else if (packet.id <= lastPacketID)
+        {
+            std::cerr << "Stale packet received" << std::endl;
         }
         else
         {
