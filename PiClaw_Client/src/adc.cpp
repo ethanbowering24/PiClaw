@@ -2,6 +2,11 @@
 #include "ADS1115.h"
 #include "I2Cdev.h"
 
+ADC::ADC(I2Cdev& i2cdev) :i2cDev(i2cDev), adc1115(i2cDev)
+{
+
+}
+
 bool ADC::Connect()
 {
 
@@ -22,7 +27,7 @@ bool ADC::Connect()
 
 int16_t ADC::Read()
 {
-    return ReadingToPercentage(adc1115.computeVolts(adc1115.readADC_SingleEnded(0)));
+    return ADC::ReadingToPercentage(adc1115.computeVolts(adc1115.readADC_SingleEnded(0)));
 
 }
 
