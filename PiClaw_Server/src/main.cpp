@@ -13,7 +13,7 @@ int main()
 {
     std::cout << std::fixed << std::setprecision(2);
     Robot robot;
-    if (!robot.Initialize())
+    if (robot.Initialize() != 0)
     {
         std::cerr << "Initilazation failed, exiting" << std::endl;
         return -1;
