@@ -27,10 +27,10 @@ bool ADC::Connect()
 
 int16_t ADC::Read()
 {
-    return ADC::ReadingToPercentage(adc1115.computeVolts(adc1115.readADC_SingleEnded(0)));
+    return ReadingToPercentage(adc1115.computeVolts(adc1115.readADC_SingleEnded(0)));
 
 }
 
-static float ReadingToPercentage(float adc_voltage){
+float ADC::ReadingToPercentage(float adc_voltage){
     return (adc_voltage/5);
 }
