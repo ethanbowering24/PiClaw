@@ -36,7 +36,6 @@ class Robot
         }};
 
     public:
-        Robot();
         int Initialize();
         bool Move(Packet &packet);
 
