@@ -7,7 +7,7 @@ int Robot::Initialize()
 {
 
     int ret = gpioInitialise();
-    if (ret != 0)
+    if (ret == PI_INIT_FAILED)
     {
         std::cerr << "gpioInitialize failed!" << std::endl;
         return ret;
