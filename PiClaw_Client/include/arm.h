@@ -3,6 +3,7 @@
 #include "mpu.h"
 #include "Fusion.h"
 #include "packet.h"
+#include "adc.h"
 #include <iostream>
 
 class Arm
@@ -14,6 +15,8 @@ class Arm
         MPU wrist;
         MPU forearm;
         MPU upArm;
+        ADC adc;
+
 
     public:
         Arm();

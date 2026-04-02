@@ -3,36 +3,41 @@
 #include "mpu.h"
 #include "Fusion.h"
 #include "packet.h"
+#include "ADS1115.h"
 
 #include <iostream>
 #include <chrono>
 #include <thread>
 
-Arm::Arm() : i2c1("/dev/i2c-1"), i2c3("/dev/i2c-3"), i2c4("/dev/i2c-4"), wrist(i2c1, false), forearm(i2c3, false), upArm(i2c4, false)
+Arm::Arm() : i2c1("/dev/i2c-1"), i2c3("/dev/i2c-3"), i2c4("/dev/i2c-4"), wrist(i2c1, false), forearm(i2c3, false), upArm(i2c4, false), adc(i2c4)
 {
 
 }
 
 bool Arm::Connect()
 {
-    bool ret = true;
     if (!wrist.Connect())
     {
         std::cerr << "Wrist connection failed" << std::endl;
-        ret = false;
+        return false;
     }
     if (!forearm.Connect())
     {
         std::cerr << "Forearm connection failed" << std::endl;
-        ret = false;
+        return false;
     }
     if (!upArm.Connect())
     {
         std::cerr << "UpArm connection failed" << std::endl;
-        ret = false;
+        return false;
+    }
+    if (!adc.Connect())
+    {
+        std::cerr << "ADC connection failed" << std::endl;
+        return false;
     }
     
-    return ret;
+    return true;
 }
 
 void Arm::Calibrate()
@@ -61,7 +66,8 @@ Packet Arm::Read()
 
     readEuler(wrist, WRIST_ROLL, WRIST_PITCH, WRIST_YAW);
     readEuler(forearm, FOREARM_ROLL, FOREARM_PITCH, FOREARM_YAW);
-
+    readEuler(upArm, UPARM_ROLL, UPARM_PITCH, UPARM_YAW);
+    packet.values[CLAW] = adc.Read();
     return packet;
     
 }
