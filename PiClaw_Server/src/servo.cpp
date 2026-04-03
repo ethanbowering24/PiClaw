@@ -29,7 +29,7 @@ int Servo::writeAngle(int angle)
     int angleDelta = std::abs(angle-currentAngle);
     if (angleDelta <= 1){
         //One degree difference, make no changes
-        return true;
+        return 0;
     }
 
     int pulseWidth = angleToPulseWidth(angle);
