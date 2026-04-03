@@ -14,6 +14,7 @@ Servo::Servo(int pinNumber, std::pair<int,int> limits, int powerupAngle, int off
 int Servo::writeAngle(int angle)
 {
 
+    angle += offset;
     if (angle > limits.second){
         //Angle past servo max, write max angle instead
         angle=limits.second;
