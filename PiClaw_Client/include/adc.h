@@ -15,6 +15,6 @@ class ADC
     public:
         ADC(I2Cdev &i2cDev);
         bool Connect();
-        int16_t Read();
+        float Read();
 
 };
