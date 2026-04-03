@@ -2,7 +2,7 @@
 #include "ADS1115.h"
 #include "I2Cdev.h"
 
-ADC::ADC(I2Cdev& i2cdev) :i2cDev(i2cDev), adc1115(i2cDev)
+ADC::ADC(I2Cdev& i2cDev) :i2cDev(i2cDev), adc1115(i2cDev)
 {
 
 }
