@@ -31,8 +31,9 @@ bool Robot::Move(Packet& packet) //TODO this needs to now write angles to the se
 {
     int ret = 0;
     ret |= servos[SERVO_WRIST_ROLL].writeAngle(packet.values[WRIST_ROLL]);
-    ret |= servos[SERVO_WRIST_PITCH].writeAngle(packet.values[WRIST_PITCH]);
+    ret |= servos[SERVO_WRIST_PITCH].writeAngle(packet.values[WRIST_PITCH]-packet.values[FOREARM_PITCH]);
     //ret |= servos[SERVO_WRIST_PITCH].writeAngle(packet.values[WRIST_PITCH]-packet.values[FOREARM_PITCH]-packet.values[UPARM_PITCH]);
+    ret |= servos[SERVO_FOREARM_PITCH].writeAngle(-packet.values[FOREARM_PITCH]);
    // ret |= servos[SERVO_FOREARM_PITCH].writeAngle(packet.values[FOREARM_PITCH]-packet.values[UPARM_PITCH]);
    // ret |= servos[SERVO_UPARM_PITCH].writeAngle(packet.values[UPARM_PITCH]);
    // ret |= servos[SERVO_UPARM_YAW].writeAngle(packet.values[FOREARM_YAW]);

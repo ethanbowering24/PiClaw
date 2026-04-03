@@ -29,7 +29,7 @@ class Robot
         std::array<Servo, SERVO_COUNT> servos {{
             {WRISTROLL_PIN,    std::pair<int,int>{0, 180},  0,  0, "WristRoll"},
             {WRISTPITCH_PIN,   std::pair<int,int>{0, 180}, 90,  90, "WristPitch"},
-            {FOREARMPITCH_PIN, std::pair<int,int>{0, 180}, 90,  0, "ForearmPitch"},
+            {FOREARMPITCH_PIN, std::pair<int,int>{0, 180},  0,	0, "ForearmPitch"},
             {UPARMPITCH_PIN,   std::pair<int,int>{0, 180}, 90,  0, "UpArmPitch"},
             {UPARMYAW_PIN,     std::pair<int,int>{0, 180}, 90,  0, "UpArmYaw"},
             {CLAW_PIN,         std::pair<int,int>{0, 180},  0,  0, "Claw"},
