@@ -6,8 +6,8 @@ set(CLIENT_SOURCES
     src/main.cpp
     src/arm.cpp
     src/adc.cpp
-	include/LinuxI2CDev/I2Cdev/I2Cdev.cpp
-	include/LinuxI2CDev/MPU6050/MPU6050.cpp
+    include/LinuxI2CDev/I2Cdev/I2Cdev.cpp
+    include/LinuxI2CDev/MPU6050/MPU6050.cpp
     include/LinuxI2CDev/QMC5883P/QMC5883P.cpp
     include/LinuxI2CDev/ADS1115/ADS1115.cpp
 )
@@ -17,8 +17,7 @@ if(IS_PI)
     set(TARGET_NAME PiClaw_Client)
     add_executable(${TARGET_NAME} ${CLIENT_SOURCES})
     
-    find_library(WIRINGPI_LIB wiringPi REQUIRED)
-    target_link_libraries(${TARGET_NAME} PRIVATE ${WIRINGPI_LIB} Fusion) 
+    target_link_libraries(${TARGET_NAME} PRIVATE Fusion) 
 
 else()
     # --- BUILD FOR PC (CHECK ONLY) ---

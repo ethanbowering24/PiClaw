@@ -11,9 +11,8 @@ if(IS_PI)
     set(TARGET_NAME PiClaw_Server)
     add_executable(${TARGET_NAME} ${SERVER_SOURCES})
     
-    find_library(WIRINGPI_LIB wiringPi REQUIRED)
     find_library(PIGPIO_LIB pigpio REQUIRED)
-    target_link_libraries(${TARGET_NAME} PRIVATE ${WIRINGPI_LIB} ${PIGPIO_LIB}) 
+    target_link_libraries(${TARGET_NAME} PRIVATE ${PIGPIO_LIB}) 
 
 else()
     # --- BUILD FOR PC (CHECK ONLY) ---
