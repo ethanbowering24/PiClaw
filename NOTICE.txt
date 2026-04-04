@@ -1,0 +1,83 @@
+This software uses the following open source libraries:
+
+I2CDEVLIB
+License : MIT License
+Source : https://github.com/jrowberg/i2cdevlib
+
+Adafruit ADS1115 Library
+License : BSD License
+
+Driver for TI's ADS1X15: 12 and 16-bit Differential or Single-Ended ADC with PGA and Comparator
+Info
+
+This family of ADCs provide 4 single-ended or 2 differential channels. Each has a programmable gain amplifier from 2/3 up to 16x. Available in 12 or 16 bit versions:
+
+    ADS1015 12-bit ADC
+    ADS1115 16-bit ADC
+
+The chip's fairly small so it comes on a breakout board with ferrites to keep the AVDD and AGND quiet. Interfacing is done via I2C. The address can be changed to one of four options (see the datasheet table 5) so you can have up to 4 ADS1x15's connected on a single 2-wire I2C bus for 16 single ended inputs.
+
+Adafruit invests time and resources providing this open source code, please support Adafruit and open-source hardware by purchasing products from Adafruit!
+License
+
+BSD license, all text above must be included in any redistribution.
+
+Software License Agreement (BSD License)
+
+Copyright (c) 2012, Adafruit Industries
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+3. Neither the name of the copyright holders nor the
+names of its contributors may be used to endorse or promote products
+derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ''AS IS'' AND ANY
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY
+DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+Source : https://github.com/adafruit/Adafruit_ADS1X15
+
+Adafruit QMC5883P
+License : MIT Library
+
+This is a library for the QMC5883P 3-axis magnetometer
+Features
+
+    3-axis magnetic field sensing
+    16-bit resolution
+    I2C interface
+    Multiple full-scale ranges (±2G, ±8G, ±12G, ±30G)
+    Built-in self-test capability
+    Temperature compensation
+
+Installation
+
+To install, use the Arduino Library Manager and search for "Adafruit QMC5883P" and install the library.
+Dependencies
+
+This library depends on the Adafruit BusIO library
+Hardware
+
+The QMC5883P is a 3-axis magnetometer with I2C interface. It requires a 3.3V or 5V power supply.
+Contributing
+
+Contributions are welcome! Please read our Code of Conduct before contributing to help this project stay welcoming.
+License
+
+MIT license, all text above must be included in any redistribution.
+
+Source : https://github.com/adafruit/Adafruit_QMC5883P
