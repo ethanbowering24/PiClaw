@@ -16,7 +16,7 @@ enum {
     UPARM_PITCH,
     UPARM_YAW,
     CLAW,
-    INDEX_COUNT  // bonus: tracks array size
+    INDEX_COUNT  
 };
 
 struct Packet {

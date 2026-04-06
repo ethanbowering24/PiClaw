@@ -22,7 +22,6 @@ void MPU::Calibrate()
     mpu6050.CalibrateAccel();
     mpu6050.CalibrateGyro();
     mpu6050.PrintActiveOffsets();
-    // save to a file
 
     if (hasQMC)
     {

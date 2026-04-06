@@ -4,7 +4,7 @@
 #include "pigpio.h"
 
 #include <iostream>
-#include <iomanip> // Required for std::fixed and std::setprecision
+#include <iomanip> 
 
 constexpr int PORT = 8080;
 
@@ -35,10 +35,6 @@ int main()
             lastPacketID = packet.id;
             robot.Move(packet);
             std::cout << packet.PacketToString() << std::endl;
-            //getLatestAngles(packet);
-            //wristRoll.writeAngle(currentAngles[MOTOR_WRIST_ROLL]);
-            //wristPitch.writeAngle(currentAngles[MOTOR_WRIST_PITCH]);
-
         }
         else if (packet.id <= lastPacketID)
         {

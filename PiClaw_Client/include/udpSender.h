@@ -2,12 +2,12 @@
 
 #include "packet.h"
 
-#include <sys/socket.h>   // socket(), sendto(), sockaddr_storage
-#include <netdb.h>        // getaddrinfo(), freeaddrinfo()
-#include <unistd.h>       // close()
-#include <string.h>       // memcpy()
-#include <string>         // std::string
-#include <stdexcept>      // std::runtime_error
+#include <sys/socket.h>   
+#include <netdb.h>        
+#include <unistd.h>       
+#include <string.h>       
+#include <string>         
+#include <stdexcept>
 
 class UdpSender {
 public:
