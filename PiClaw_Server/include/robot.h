@@ -32,7 +32,7 @@ class Robot
             {WRISTPITCH_PIN,   std::pair<int,int>{0, 180}, 90,  90, "WristPitch"},
             {FOREARMPITCH_PIN, std::pair<int,int>{0, 180},  0,	0, "ForearmPitch"},
             {UPARMPITCH_PIN,   std::pair<int,int>{0, 180}, 90,  0, "UpArmPitch"},
-            {UPARMYAW_PIN,     std::pair<int,int>{0, 180}, 90,  0, "UpArmYaw"},
+            {UPARMYAW_PIN,     std::pair<int,int>{0, 180}, 90,  90, "UpArmYaw"},
         }};
 
     public:
