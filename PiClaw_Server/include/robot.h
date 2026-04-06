@@ -17,12 +17,12 @@ class Robot
 
         enum ServoIndex 
         { 
+            SERVO_CLAW, 
             SERVO_WRIST_ROLL, 
             SERVO_WRIST_PITCH, 
             SERVO_FOREARM_PITCH, 
             SERVO_UPARM_PITCH, 
             SERVO_UPARM_YAW, 
-            SERVO_CLAW, 
             SERVO_COUNT 
         };
 
