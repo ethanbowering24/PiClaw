@@ -117,3 +117,8 @@ FusionEuler MPU::ReadFusion()
     return(FusionQuaternionToEuler(FusionAhrsGetQuaternion(&ahrs)));
 
 }
+
+bool MPU::Initialized()
+{    
+    return !FusionAhrsGetFlags(&ahrs).initialising;
+}

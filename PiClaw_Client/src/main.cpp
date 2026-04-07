@@ -30,6 +30,7 @@ int main(int argc, char* argv[])
         return 0;
     }
 
+    arm.Initialize();
     int id = 0;
     while (true)
     {

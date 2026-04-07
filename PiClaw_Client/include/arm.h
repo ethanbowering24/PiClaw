@@ -16,6 +16,7 @@ class Arm
         MPU forearm;
         MPU upArm;
         ADC adc;
+        float yawOffset = 0;
 
 
     public:
@@ -23,4 +24,5 @@ class Arm
         bool Connect();
         void Calibrate();
         Packet Read();
+        void Initialize();
 };

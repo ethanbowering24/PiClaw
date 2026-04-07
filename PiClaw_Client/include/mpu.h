@@ -39,5 +39,6 @@ public:
     void Calibrate();
     bool Connect();
     FusionEuler ReadFusion();
+    bool Initialized();
 
 };
