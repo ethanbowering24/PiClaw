@@ -88,21 +88,25 @@ void Arm::Initialize()
     
     do
     {
-        Packet packet;
         auto next_loop_time = std::chrono::steady_clock::now();
 
-        readEuler(wrist, WRIST_ROLL, WRIST_PITCH, WRIST_YAW, packet);
-        readEuler(forearm, FOREARM_ROLL, FOREARM_PITCH, FOREARM_YAW, packet);
-        readEuler(upArm, UPARM_ROLL, UPARM_PITCH, UPARM_YAW, packet);
-
-        tmp = packet.values[FOREARM_YAW];
+        wrist.ReadFusion();
+        forearm.ReadFusion();
+        upArm.ReadFusion();
 
         next_loop_time += std::chrono::milliseconds(10);
         std::this_thread::sleep_until(next_loop_time);
         
     } while (!wrist.Initialized() && !forearm.Initialized() && !upArm.Initialized());
 
-    yawOffset = tmp;
+    auto next_loop_time = std::chrono::steady_clock::now();
+    
+    wrist.ReadFusion();
+    yawOffset = forearm.ReadFusion().angle.yaw;
+    upArm.ReadFusion();
+
+    next_loop_time += std::chrono::milliseconds(10);
+    std::this_thread::sleep_until(next_loop_time);
 
     return;
 
