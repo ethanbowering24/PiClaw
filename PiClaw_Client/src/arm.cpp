@@ -68,7 +68,7 @@ Packet Arm::Read()
     readEuler(forearm, FOREARM_ROLL, FOREARM_PITCH, FOREARM_YAW);
     readEuler(upArm, UPARM_ROLL, UPARM_PITCH, UPARM_YAW);
     packet.values[CLAW] = adc.Read();
-    packet.values[FOREARM_YAW] -= yawOffset;
+    //packet.values[FOREARM_YAW] -= yawOffset;
     return packet;
     
 }
