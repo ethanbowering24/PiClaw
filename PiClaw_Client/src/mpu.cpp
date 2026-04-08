@@ -63,7 +63,7 @@ bool MPU::Connect()
         qmc5883p.initialize();
         qmc5883p.setMode(0x01); // normal mode
         qmc5883p.setODR(0x02); //100Hz
-        qmc5883p.setRange(0x00); //30 gauss (?? Confirm this selection)
+        qmc5883p.setRange(0x03); //2 gauss (?? Confirm this selection)
     }
     else
     {
@@ -95,7 +95,7 @@ FusionEuler MPU::ReadFusion()
     {
         int16_t mx ,my ,mz ;
         qmc5883p.getRawMagnetic(&mx, &my, &mz);
-        magnetometer = {mx/1000.0f, my/1000.0f, mz/1000.0f};
+        magnetometer = {mx/15000.0f, my/15000.0f, mz/15000.0f};
     }
 
     // Calculate delta time to compensate for gyroscope sample clock errors
