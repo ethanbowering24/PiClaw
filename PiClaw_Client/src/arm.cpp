@@ -108,6 +108,8 @@ void Arm::Initialize()
     next_loop_time += std::chrono::milliseconds(10);
     std::this_thread::sleep_until(next_loop_time);
 
+    std::cout << "Yaw offset: " << yawOffset << std::endl;
+
     return;
 
 }

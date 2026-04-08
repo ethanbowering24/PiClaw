@@ -96,7 +96,9 @@ FusionEuler MPU::ReadFusion()
         int16_t mx ,my ,mz ;
         qmc5883p.getRawMagnetic(&mx, &my, &mz);
         magnetometer = {mx/1000.0f, my/1000.0f, mz/1000.0f};
+        std::cout << "magx: " << mx/1000.0f << " magy: " << my/1000.0f << " magz: " << mz/1000.0f << std::endl;
     }
+
 
     // Calculate delta time to compensate for gyroscope sample clock errors
     auto currentTime = std::chrono::steady_clock::now();

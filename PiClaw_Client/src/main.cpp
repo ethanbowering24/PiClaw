@@ -15,15 +15,9 @@ int main(int argc, char* argv[])
 {
 
     Arm arm;
-    UdpSender sockSend;
 
     arm.Connect();
 
-    if(!sockSend.init("Claw-Server", "8080"))
-    {
-        std::cerr << "Socket failed" << std::endl;
-        return -1;
-    }
     std::vector<std::string> args(argv, argv + argc);
     if (std::find(args.begin(), args.end(), "--calibrate") != args.end()) {
         arm.Calibrate();
@@ -37,11 +31,8 @@ int main(int argc, char* argv[])
         auto next_loop_time = std::chrono::steady_clock::now();
         Packet packet = arm.Read();
         packet.id = id++;
-        std::cout << packet.PacketToString() << std::endl;
-        if(!sockSend.send(packet))
-        {
-            std::cerr << "send failed" << std::endl;
-        }
+        //std::cout << packet.PacketToString() << std::endl;
+       
         next_loop_time += std::chrono::milliseconds(10);
         std::this_thread::sleep_until(next_loop_time);
     }
