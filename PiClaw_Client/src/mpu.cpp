@@ -95,7 +95,7 @@ FusionEuler MPU::ReadFusion()
     {
         int16_t mx ,my ,mz ;
         qmc5883p.getRawMagnetic(&mx, &my, &mz);
-        magnetometer = {mx/15000.0f, my/15000.0f, mz/15000.0f};
+        magnetometer = {-mx/15000.0f, -my/15000.0f, mz/15000.0f};
     }
 
     // Calculate delta time to compensate for gyroscope sample clock errors
