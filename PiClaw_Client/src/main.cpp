@@ -31,7 +31,7 @@ int main(int argc, char* argv[])
         auto next_loop_time = std::chrono::steady_clock::now();
         Packet packet = arm.Read();
         packet.id = id++;
-        //std::cout << packet.PacketToString() << std::endl;
+        std::cout << packet.PacketToString() << std::endl;
        
         next_loop_time += std::chrono::milliseconds(10);
         std::this_thread::sleep_until(next_loop_time);
