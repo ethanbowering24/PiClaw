@@ -11,6 +11,16 @@
 #include <memory>
 #include <thread>
 
+std::string helpMsg(const char* progName) {
+    return std::string("Usage: ") + progName + " [address] [port] [option]\n"
+           "  address  Server address (default: Claw-Server)\n"
+           "  port     Server port   (default: 8080)\n"
+           "  options:\n"
+           "    --calibrate  calibrate MPUs and exit\n"
+           "    --help       print this message and exit\n";
+}
+
+
 int main(int argc, char* argv[])
 {
 
@@ -18,7 +28,19 @@ int main(int argc, char* argv[])
     UdpSender sockSend;
 
     arm.Connect();
+
     std::vector<std::string> args(argv, argv + argc);
+    if (argc > 4)
+    {
+        std::cerr << helpMsg(argv[0]);
+        return -1;
+    }
+    
+    if (std::find(args.begin(), args.end(), "--help") != args.end()) {
+        std::cout << helpMsg(argv[0]);
+        return 0;
+    }
+
     if (std::find(args.begin(), args.end(), "--calibrate") != args.end()) {
         arm.Calibrate();
         return 0;
