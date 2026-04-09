@@ -36,6 +36,8 @@ int main(int argc, char* argv[])
         auto next_loop_time = std::chrono::steady_clock::now();
         Packet packet = arm.Read();
         packet.id = id++;
+        packet.timestamp = std::chrono::duration_cast<std::chrono::microseconds>(
+                            std::chrono::system_clock::now().time_since_epoch()).count();
         std::cout << packet.PacketToString() << std::endl;
         if(!sockSend.send(packet))
         {

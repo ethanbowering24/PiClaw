@@ -22,12 +22,14 @@ enum {
 struct Packet {
     int id;
     float values[INDEX_COUNT];
+    int64_t timestamp;
 
     std::string PacketToString()
     {
         std::ostringstream ss;
         ss << std::fixed << std::setprecision(2);
         ss << "Packet ID: " << id << "\n";
+        ss << "Timestamp: " << timestamp << "\n";
         ss << "Claw: " << values[CLAW] << "\n";
         ss << "            Roll    Pitch    Yaw\n";
         ss << "Wrist:      " << values[WRIST_ROLL]      << "    " << values[WRIST_PITCH]    << "    " << values[WRIST_YAW]      << "\n";
