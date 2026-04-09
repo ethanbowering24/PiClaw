@@ -18,16 +18,27 @@ int main(int argc, char* argv[])
     UdpSender sockSend;
 
     arm.Connect();
-
-    if(!sockSend.init("Claw-Server", "8080"))
-    {
-        std::cerr << "Socket failed" << std::endl;
-        return -1;
-    }
     std::vector<std::string> args(argv, argv + argc);
     if (std::find(args.begin(), args.end(), "--calibrate") != args.end()) {
         arm.Calibrate();
         return 0;
+    }
+
+    const char* address = "Claw-Server";
+    const char* port = "8080";
+    if (argc >= 2)
+    {
+        address = argv[1];
+    }
+    if (argc >= 3)
+    {
+        port = argv[2];
+    }    
+
+    if(!sockSend.init(address, port))
+    {
+        std::cerr << "Socket failed" << std::endl;
+        return -1;
     }
 
     int id = 0;
